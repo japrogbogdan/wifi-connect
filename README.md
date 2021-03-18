@@ -1,6 +1,6 @@
 # Android Wifi Connect library
 
-<p float="left" align="middle">
+<p float="left" align="left">
     <img src="/images/sample.jpg" width="25%" />
 </p>
 
