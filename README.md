@@ -1,5 +1,8 @@
 # Android Wifi Connect library
 
+<p float="left" align="middle">
+    <img src="/images/sample.png" width="25%" />
+</p>
 
 ## Steps to integrate sdk into your build:
 
