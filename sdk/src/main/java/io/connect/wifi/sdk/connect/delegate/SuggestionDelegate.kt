@@ -19,11 +19,17 @@ internal class SuggestionDelegate(
     }
     private val suggestions = ArrayList<WifiNetworkSuggestion>()
 
+    /**
+     * Make delegate implementation available for connection
+     */
     override fun prepareDelegate() {
         suggestions.clear()
         suggestions.add(suggestion.build())
     }
 
+    /**
+     * Connect to wifi using previously created delegate implementation
+     */
     override fun connect() {
         wifiManager.removeNetworkSuggestions(suggestions)
         val status = wifiManager.addNetworkSuggestions(suggestions)

@@ -22,11 +22,17 @@ internal class SuggestionListDelegate(
     }
     private val suggestions = ArrayList<WifiNetworkSuggestion>()
 
+    /**
+     * Make delegate implementation available for connection
+     */
     override fun prepareDelegate() {
         suggestions.clear()
         suggestions.add(suggestion.build())
     }
 
+    /**
+     * Connect to wifi using previously created delegate implementation
+     */
     override fun connect() {
         val bundle = Bundle().apply {
             putParcelableArrayList(Settings.EXTRA_WIFI_NETWORK_LIST, suggestions)

@@ -3,10 +3,31 @@ package io.connect.wifi.sdk
 import android.os.Build
 import io.connect.wifi.sdk.config.WifiConfig
 
+/**
+ * @suppress Internal api
+ *
+ * Factory that will create {@link io.connect.wifi.sdk.config.WifiConfig} for internal usage.
+ * @see io.connect.wifi.sdk.config.WifiConfig
+ *
+ * @since 1.0.1
+ */
 internal class WifiConfigFactory {
-
+    /**
+     * We use cache to avoid creating new {@link io.connect.wifi.sdk.config.WifiConfig} if already
+     * have instance for the same {@link io.connect.wifi.sdk.WifiRule}
+     */
     private val cache = HashMap<WifiRule, WifiConfig>()
 
+    /**
+     * Provide {@link io.connect.wifi.sdk.config.WifiConfig}
+     * by {@link io.connect.wifi.sdk.WifiRule}  or null
+     *
+     * @param - {@link io.connect.wifi.sdk.WifiRule} or null
+     * @return - {@link io.connect.wifi.sdk.config.WifiConfig} or null
+     *
+     * @see io.connect.wifi.sdk.config.WifiConfig
+     * @see io.connect.wifi.sdk.WifiRule
+     */
     fun createConfig(rule: WifiRule?): WifiConfig? {
 
         if (rule == null) return null

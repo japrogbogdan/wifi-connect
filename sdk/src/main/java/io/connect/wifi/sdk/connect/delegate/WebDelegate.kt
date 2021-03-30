@@ -6,12 +6,24 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import io.connect.wifi.sdk.config.WifiConfig
 
+/**
+ * @suppress Internal api
+ *
+ * Delegate implementation for {@link io.connect.wifi.sdk.config.WifiConfig.SupportNetworkWep}
+ *
+ * @see io.connect.wifi.sdk.config.WifiConfig.SupportNetworkWep
+ *
+ * @since 1.0.1
+ */
 @RequiresApi(Build.VERSION_CODES.P)
 internal class WebDelegate(
     wifiManager: WifiManager,
     private val rule: WifiConfig.SupportNetworkWep
 ) : BaseSupportDelegate(wifiManager) {
 
+    /**
+     * Connect to wifi using previously created delegate implementation
+     */
     override fun connect() {
         config?.let {
             it.SSID = quoteNonHex(rule.ssid)

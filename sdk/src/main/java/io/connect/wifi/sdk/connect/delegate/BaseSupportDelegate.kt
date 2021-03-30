@@ -7,17 +7,32 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import java.util.regex.Pattern
 
+/**
+ * @suppress Internal api
+ *
+ * Base implementation for all delegates that we can use on android 28 and lower versions.
+ *
+ * @since 1.0.1
+ */
 @RequiresApi(Build.VERSION_CODES.P)
 abstract class BaseSupportDelegate(private val wifiManager: WifiManager) : ConnectionDelegate {
-
+    /**
+     * We use {@link android.net.wifi.WifiConfiguration} to connect to wifi
+     */
     protected var config: WifiConfiguration? = null
     private val HEX_DIGITS = Pattern.compile("[0-9A-Fa-f]+")
 
+    /**
+     * Make delegate implementation available for connection
+     */
     override fun prepareDelegate() {
         connectToWifi()
         changeNetworkCommon()
     }
 
+    /**
+     * Enable wifi if disabled
+     */
     private fun connectToWifi() {
         // Start WiFi, otherwise nothing will work
         if (!wifiManager.isWifiEnabled) {
@@ -41,6 +56,9 @@ abstract class BaseSupportDelegate(private val wifiManager: WifiManager) : Conne
         }
     }
 
+    /**
+     * Reset all configs
+     */
     private fun changeNetworkCommon() {
         config = WifiConfiguration().apply {
             allowedAuthAlgorithms.clear()
@@ -51,6 +69,9 @@ abstract class BaseSupportDelegate(private val wifiManager: WifiManager) : Conne
         }
     }
 
+    /**
+     * Do connection by config
+     */
     protected fun updateNetwork(){
         findNetworkInExistingConfig()?.let {
             wifiManager.removeNetwork(it)
