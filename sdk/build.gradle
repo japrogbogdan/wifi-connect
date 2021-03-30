@@ -37,3 +37,28 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.3.2'
     testImplementation 'junit:junit:4.+'
 }
+
+task generateMySources(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+task addMySourcesToAar(type: Jar) {
+    archiveName "sdk.aar"
+    destinationDir file("build")
+    from zipTree("build/outputs/aar/sdk-debug.aar")
+    from fileTree("build").include("libs/sdk-sources.jar")
+}
+
+artifacts {
+    archives generateMySources
+}
+
+afterEvaluate { project ->
+    project.tasks.preBuild.dependsOn generateMySources
+    project.addMySourcesToAar.dependsOn build
+}
+artifacts {
+    archives addMySourcesToAar.archivePath
+}
+
