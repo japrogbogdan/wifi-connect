@@ -23,7 +23,7 @@ internal sealed class WifiConfig(open val ssid: String) {
 
     /**
      * We use this configuration for android 28 and lower version.
-     * Its wrapper for {@link io.connect.wifi.sdk.NetworkEncryption.WEP}
+     * Its wrapper for NetworkEncryption.WEP
      *
      * @see io.connect.wifi.sdk.NetworkEncryption.WEP
      */
@@ -35,7 +35,7 @@ internal sealed class WifiConfig(open val ssid: String) {
 
     /**
      * We use this configuration for android 28 and lower version.
-     * Its wrapper for {@link io.connect.wifi.sdk.NetworkEncryption.WPA2}
+     * Its wrapper for NetworkEncryption.WPA2
      *
      * @see io.connect.wifi.sdk.NetworkEncryption.WPA2
      */
@@ -47,7 +47,7 @@ internal sealed class WifiConfig(open val ssid: String) {
 
     /**
      * We use this configuration for android 28 and lower version.
-     * Its wrapper for {@link io.connect.wifi.sdk.NetworkEncryption.WPA2EAP}
+     * Its wrapper for NetworkEncryption.WPA2EAP
      *
      * @see io.connect.wifi.sdk.NetworkEncryption.WPA2EAP
      */

@@ -7,8 +7,8 @@ import io.connect.wifi.sdk.config.WifiConfig
 /**
  * @suppress Internal api
  *
- * Delegate object that will find {io.connect.wifi.sdk.connect.delegate.ConnectionDelegate}
- * for specific {@link io.connect.wifi.sdk.config.WifiConfig} and start connection
+ * Delegate object that will find [io.connect.wifi.sdk.connect.delegate.ConnectionDelegate]
+ * for specific [io.connect.wifi.sdk.config.WifiConfig] and start connection
  *
  * @see io.connect.wifi.sdk.connect.delegate.ConnectionDelegate
  *
@@ -16,12 +16,12 @@ import io.connect.wifi.sdk.config.WifiConfig
  */
 internal class ConnectionManager(
     /**
-     * @param - reference to {@link android.net.wifi.WifiManager}
+     * @param - reference to [android.net.wifi.WifiManager]
      */
     wifiManager: WifiManager,
 
     /**
-     * we use to run {@link android.app.Activity.startActivityForResult } on android 30+ versions
+     * we use to run [android.app.Activity.startActivityForResult] on android 30+ versions
      */
     startActivityForResult: (Intent, Int) -> Unit
 ) {
@@ -31,7 +31,7 @@ internal class ConnectionManager(
     }
 
     /**
-     * Start connection for {@link io.connect.wifi.sdk.config.WifiConfig}
+     * Start connection for WifiConfig
      *
      * @see io.connect.wifi.sdk.config.WifiConfig
      */

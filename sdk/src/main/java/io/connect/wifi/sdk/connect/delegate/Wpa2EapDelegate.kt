@@ -9,7 +9,7 @@ import io.connect.wifi.sdk.config.WifiConfig
 /**
  * @suppress Internal api
  *
- * Delegate implementation for {@link io.connect.wifi.sdk.config.WifiConfig.SupportNetworkWpa2Eap}
+ * Delegate implementation for WifiConfig.SupportNetworkWpa2Eap
  *
  * @see io.connect.wifi.sdk.config.WifiConfig.SupportNetworkWpa2Eap
  *

@@ -6,6 +6,15 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import io.connect.wifi.sdk.config.WifiConfig
 
+/**
+ * @suppress Internal api
+ *
+ * Delegate implementation for WifiConfig.Wpa2PassphraseSuggestion
+ *
+ * @see io.connect.wifi.sdk.config.WifiConfig.Wpa2PassphraseSuggestion
+ *
+ * @since 1.0.1
+ */
 @RequiresApi(Build.VERSION_CODES.Q)
 internal class SuggestionDelegate(
     private val wifiManager: WifiManager,

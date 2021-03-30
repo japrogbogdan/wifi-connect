@@ -68,7 +68,7 @@ class WifiRule private constructor(
         /**
          * set security type of wifi point.
          * @see io.connect.wifi.sdk.NetworkEncryption for supported types
-         * Default value is {@link io.connect.wifi.sdk.NetworkEncryption#WPA2} if not set
+         * Default value is [io.connect.wifi.sdk.NetworkEncryption.WPA2] if not set
          */
         var networkEncryption: NetworkEncryption = NetworkEncryption.WPA2,
 
@@ -79,27 +79,27 @@ class WifiRule private constructor(
         var hidden: Boolean = false,
 
         /**
-         * set identity for {@link android.net.wifi.WifiEnterpriseConfig}
+         * set identity for WifiEnterpriseConfig
          * @see android.net.wifi.WifiEnterpriseConfig
          */
         var identity: String? = null,
 
         /**
          * set anonymous identity. This is used as the unencrypted identity with
-         * certain EAP types in {@link android.net.wifi.WifiEnterpriseConfig}
+         * certain EAP types in WifiEnterpriseConfig
          * @see android.net.wifi.WifiEnterpriseConfig
          */
         var anonymousIdentity: String? = null,
 
         /**
-         * set EAP authentication method for {@link android.net.wifi.WifiEnterpriseConfig}
+         * set EAP authentication method for WifiEnterpriseConfig
          * @see io.connect.wifi.sdk.EapMethod
          * @see android.net.wifi.WifiEnterpriseConfig
          */
         var eapMethod: EapMethod? = null,
 
         /**
-         * set Phase 2 authentication method. in {@link android.net.wifi.WifiEnterpriseConfig}
+         * set Phase 2 authentication method. in WifiEnterpriseConfig
          * @see io.connect.wifi.sdk.Phase2Method
          * @see android.net.wifi.WifiEnterpriseConfig
          */
@@ -124,7 +124,7 @@ class WifiRule private constructor(
         /**
          * set security type of wifi point.
          * @see io.connect.wifi.sdk.NetworkEncryption for supported types
-         * Default value is {@link io.connect.wifi.sdk.NetworkEncryption#WPA2} if not set
+         * Default value is [io.connect.wifi.sdk.NetworkEncryption.WPA2] if not set
          *
          * @param networkEncryption - instance of NetworkEncryption
          */
@@ -140,7 +140,7 @@ class WifiRule private constructor(
         fun hidden(hidden: Boolean) = apply { this.hidden = hidden }
 
         /**
-         * set identity for {@link android.net.wifi.WifiEnterpriseConfig}
+         * set identity for WifiEnterpriseConfig
          * @see android.net.wifi.WifiEnterpriseConfig
          *
          * @param identity - non empty value
@@ -149,7 +149,7 @@ class WifiRule private constructor(
 
         /**
          * set anonymous identity. This is used as the unencrypted identity with
-         * certain EAP types in {@link android.net.wifi.WifiEnterpriseConfig}
+         * certain EAP types in WifiEnterpriseConfig
          * @see android.net.wifi.WifiEnterpriseConfig
          *
          * @param anonymousIdentity - non empty value
@@ -158,27 +158,27 @@ class WifiRule private constructor(
             apply { this.anonymousIdentity = anonymousIdentity }
 
         /**
-         * set EAP authentication method for {@link android.net.wifi.WifiEnterpriseConfig}
+         * set EAP authentication method for WifiEnterpriseConfig
          * @see io.connect.wifi.sdk.EapMethod
          * @see android.net.wifi.WifiEnterpriseConfig
          *
-         * @param eapMethod - instance of {@link io.connect.wifi.sdk.EapMethod}
+         * @param eapMethod - instance of EapMethod
          */
         fun eapMethod(eapMethod: EapMethod) = apply { this.eapMethod = eapMethod }
 
         /**
-         * set Phase 2 authentication method. in {@link android.net.wifi.WifiEnterpriseConfig}
+         * set Phase 2 authentication method. in WifiEnterpriseConfig
          * @see io.connect.wifi.sdk.Phase2Method
          * @see android.net.wifi.WifiEnterpriseConfig
          *
-         * @param phase2Method - instance of {@link io.connect.wifi.sdk.Phase2Method}
+         * @param phase2Method - instance of Phase2Method
          */
         fun phase2Method(phase2Method: Phase2Method) = apply { this.phase2Method = phase2Method }
 
         /**
          * Finish building WiFiRule by creating it's new instance
          * @see io.connect.wifi.sdk.WifiRule
-         * @return - new instance of {@link io.connect.wifi.sdk.WifiRule}
+         * @return - new instance of WifiRule
          */
         fun build() = WifiRule(
             ssid,

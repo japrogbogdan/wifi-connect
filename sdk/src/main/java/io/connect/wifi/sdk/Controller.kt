@@ -31,10 +31,10 @@ internal object Controller {
     /**
      * Start connection by rules.
      * We'll proceed this request in background thread. However, we'r able to use main thread to
-     * access {android.app.Activity} functions.
+     * access [android.app.Activity] functions.
      *
-     * @param context - provide {@link android.content.Context} to grant access to {@link android.net.wifi.WifiManager}
-     * @param rule - provide {@link io.connect.wifi.sdk.WifiRule} to define how to connect to wifi
+     * @param context - provide [android.content.Context] to grant access to [android.net.wifi.WifiManager]
+     * @param rule - provide WifiRule to define how to connect to wifi
      *
      * @see io.connect.wifi.sdk.WifiRule
      */

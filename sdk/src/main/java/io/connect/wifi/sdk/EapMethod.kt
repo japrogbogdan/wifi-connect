@@ -1,7 +1,7 @@
 package io.connect.wifi.sdk
 
 /**
- * Wrapper above {@link android.net.wifi.WifiEnterpriseConfig.Eap}
+ * Wrapper above WifiEnterpriseConfig.Eap
  * @see android.net.wifi.WifiEnterpriseConfig.Eap
  *
  * @since 1.0.1

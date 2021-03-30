@@ -9,6 +9,15 @@ import android.provider.Settings
 import androidx.annotation.RequiresApi
 import io.connect.wifi.sdk.config.WifiConfig
 
+/**
+ * @suppress Internal api
+ *
+ * Delegate implementation for WifiConfig.SuggestionNetworkList
+ *
+ * @see io.connect.wifi.sdk.config.WifiConfig.SuggestionNetworkList
+ *
+ * @since 1.0.1
+ */
 @RequiresApi(Build.VERSION_CODES.Q)
 internal class SuggestionListDelegate(
     private val rule: WifiConfig.SuggestionNetworkList,

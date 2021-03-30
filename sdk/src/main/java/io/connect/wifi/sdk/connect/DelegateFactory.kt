@@ -13,19 +13,19 @@ import io.connect.wifi.sdk.connect.delegate.Wpa2EapDelegate
 /**
  * @suppress Internal api
  *
- * Factory that will provide {@link io.connect.wifi.sdk.connect.delegate.ConnectionDelegate}
- * implementation for specific {@link io.connect.wifi.sdk.config.WifiConfig}
+ * Factory that will provide [io.connect.wifi.sdk.connect.delegate.ConnectionDelegate]
+ * implementation for specific [io.connect.wifi.sdk.config.WifiConfig]
  *
  * @since 1.0.1
  */
 internal class DelegateFactory(
     /**
-     * @param - reference to {@link android.net.wifi.WifiManager}
+     * @param - reference to [android.net.wifi.WifiManager]
      */
     private val wifiManager: WifiManager,
 
     /**
-     * we use to run {@link android.app.Activity.startActivityForResult } on android 30+ versions
+     * we use to run [android.app.Activity.startActivityForResult] on android 30+ versions
      */
     private val startActivityForResult: (Intent, Int) -> Unit
 ) {
@@ -37,12 +37,11 @@ internal class DelegateFactory(
 
     /**
      *
-     * Provide {@link io.connect.wifi.sdk.connect.delegate.ConnectionDelegate}
-     * by {@link io.connect.wifi.sdk.config.WifiConfig} or null
+     * Provide [io.connect.wifi.sdk.connect.delegate.ConnectionDelegate]
+     * by [io.connect.wifi.sdk.config.WifiConfig] or null
      *
-     * @param - {@link io.connect.wifi.sdk.config.WifiConfig}
-     * @return - implementation of {@link io.connect.wifi.sdk.connect.delegate.ConnectionDelegate} or null
-     *
+     * @param - [io.connect.wifi.sdk.config.WifiConfig]
+     * @return - implementation of ConnectionDelegate or null
      *
      * @see io.connect.wifi.sdk.connect.delegate.ConnectionDelegate
      */

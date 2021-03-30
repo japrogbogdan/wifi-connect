@@ -8,7 +8,7 @@ package io.connect.wifi.sdk
 sealed class NetworkEncryption {
     /**
      * @suppress Not Recommended option.
-     * Can use {@link android.net.wifi.WifiConfiguration.AuthAlgorithm.SHARED} authentication
+     * Can use WifiConfiguration.AuthAlgorithm.SHARED authentication
      * protocols for wifi communications
      *
      * @see android.net.wifi.WifiConfiguration.AuthAlgorithm.SHARED
@@ -16,10 +16,10 @@ sealed class NetworkEncryption {
     object WEP : NetworkEncryption()
 
     /**
-     * Can use {@link android.net.wifi.WifiConfiguration.AuthAlgorithm.OPEN} authentication
+     * Can use WifiConfiguration.AuthAlgorithm.OPEN authentication
      * protocols for wifi communications.
-     * It supports {@link android.net.wifi.WifiConfiguration.Protocol.WPA} and
-     * {@link android.net.wifi.WifiConfiguration.Protocol.RSN} protocols
+     * It supports WifiConfiguration.Protocol.WPA and
+     * WifiConfiguration.Protocol.RSN protocols
      *
      * @see android.net.wifi.WifiConfiguration.AuthAlgorithm.OPEN
      * @see android.net.wifi.WifiConfiguration.Protocol.WPA
@@ -28,10 +28,10 @@ sealed class NetworkEncryption {
     object WPA2 : NetworkEncryption()
 
     /**
-     * Can use {@link android.net.wifi.WifiConfiguration.AuthAlgorithm.OPEN} authentication
+     * Can use WifiConfiguration.AuthAlgorithm.OPEN authentication
      * protocols for wifi communications.
-     * It supports {@link android.net.wifi.WifiConfiguration.Protocol.RSN} protocol.
-     * It uses {@link android.net.wifi.WifiEnterpriseConfig}
+     * It supports WifiConfiguration.Protocol.RSN protocol.
+     * It uses WifiEnterpriseConfig
      *
      * @see android.net.wifi.WifiConfiguration.AuthAlgorithm.OPEN
      * @see android.net.wifi.WifiConfiguration.Protocol.RSN

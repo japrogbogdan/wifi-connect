@@ -17,7 +17,7 @@ import java.util.regex.Pattern
 @RequiresApi(Build.VERSION_CODES.P)
 abstract class BaseSupportDelegate(private val wifiManager: WifiManager) : ConnectionDelegate {
     /**
-     * We use {@link android.net.wifi.WifiConfiguration} to connect to wifi
+     * We use [android.net.wifi.WifiConfiguration] to connect to wifi
      */
     protected var config: WifiConfiguration? = null
     private val HEX_DIGITS = Pattern.compile("[0-9A-Fa-f]+")
