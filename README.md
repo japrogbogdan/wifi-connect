@@ -17,7 +17,10 @@ Step 1. Add the JitPack repository to your build file
         ...
         maven {
         url 'https://jitpack.io'
-        credentials { username "jp_ksphc8r6itpht8gvhdekkl5hrs" }
+        credentials {
+            username 'obolsh'
+            password 'jp_ksphc8r6itpht8gvhdekkl5hrs'
+            }
         }
       }
     }
