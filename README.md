@@ -15,19 +15,22 @@ Step 1. Add the JitPack repository to your build file
   allprojects {
       repositories {
         ...
-        maven { url 'https://jitpack.io' }
+        maven {
+        url 'https://jitpack.io'
+        credentials { username "jp_ksphc8r6itpht8gvhdekkl5hrs" }
+        }
       }
     }
   ```
 
-
+Jitpack [private repos documentation](https://jitpack.io/docs/PRIVATE/)
 
 Step 2. Add the dependency
 
 ```
 dependencies {
     ...
-    implementation 'com.github.obolsh:wifi-connect:1.0.1'
+    implementation 'com.github.obolsh:wifi-connect:1.0.4'
 }
 ```
 
