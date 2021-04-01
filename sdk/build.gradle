@@ -42,6 +42,17 @@ task generateMySources(type: Jar) {
     from android.sourceSets.main.java.srcDirs
 }
 
+task addMySourcesToAar(type: Jar) {
+    archiveName "sdk-release.aar"
+    destinationDir file("build")
+    from zipTree("build/outputs/aar/sdk-release.aar")
+    from fileTree("build").include("libs/sdk-sources.jar")
+}
+afterEvaluate { project ->
+    project.tasks.preBuild.dependsOn generateMySources
+    project.addMySourcesToAar.dependsOn assembleRelease
+}
+
 artifacts {
     archives generateMySources
 }
