@@ -61,6 +61,56 @@ commander.connectByRule(rule)
 ```
 
 
+## Steps to use sdk as standalone aar file:
+
+Step 1: Build sdk-release.aar file
+
+Execute in commandline:
+
+```
+./gradlew sdk:addMySourcesToAar
+```
+
+Step 2: Copy/paste sdk-release.aar file to your dependencies directory:
+
+Copy sdk file from sdk/build/sdk-release.aar
+
+Paste to your direcrory (Let's say 'libs')
+
+Step 3: Add sdk aar as dependency:
+
+```
+allprojects {
+    repositories {
+       ...
+        flatDir {
+            dirs 'libs'
+        }
+    }
+}
+```
+
+```
+dependencies {
+    ...
+    implementation (name: 'sdk-release', ext: 'aar')
+}
+```
+
+Step 4. Add source of sdk:
+
+In code click on one of sdk's reference classes
+
+From toolbar press 'Press Navigate' -> 'Declaration or Usage'
+
+On toolbar of opened class press 'Choose sources...' button
+
+Inside popup select 'libs/sdk-sources.jar'. This file is inside .aar file
+
+Reopen the same class.
+
+
+
 ## License
 
 ```Copyright 2021 Oleksii Bolshakov
