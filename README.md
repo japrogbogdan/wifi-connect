@@ -101,7 +101,7 @@ Step 4. Add source of sdk:
 
 In code click on one of sdk's reference classes
 
-From toolbar press 'Press Navigate' -> 'Declaration or Usage'
+From toolbar press 'Navigate' -> 'Declaration or Usage'
 
 On toolbar of opened class press 'Choose sources...' button
 
