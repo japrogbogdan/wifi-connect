@@ -3,6 +3,8 @@ package io.connect.wifi.sdk.connect
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.wifi.WifiManager
+import io.connect.wifi.sdk.ConnectStatus
+import io.connect.wifi.sdk.cerificate.CertificateFactory
 import io.connect.wifi.sdk.config.WifiConfig
 import io.connect.wifi.sdk.connect.delegate.*
 import io.connect.wifi.sdk.connect.delegate.SuggestionDelegate
@@ -27,7 +29,11 @@ internal class DelegateFactory(
     /**
      * we use to run [android.app.Activity.startActivityForResult] on android 30+ versions
      */
-    private val startActivityForResult: (Intent, Int) -> Unit
+    private val startActivityForResult: (Intent, Int) -> Unit,
+
+    private val certificateFactory: CertificateFactory,
+
+    private val status: (ConnectStatus) -> Unit
 ) {
 
     /**
@@ -55,18 +61,38 @@ internal class DelegateFactory(
             is WifiConfig.SupportNetworkWep -> WebDelegate(wifiManager, config).also {
                 cache[config] = it
             }
-            is WifiConfig.SupportNetworkWpa2 -> Wpa2Delegate(wifiManager, config).also {
+            is WifiConfig.SupportNetworkWpa2 -> Wpa2Delegate(wifiManager, config, status).also {
                 cache[config] = it
             }
             is WifiConfig.SupportNetworkWpa2Eap -> Wpa2EapDelegate(wifiManager, config).also {
                 cache[config] = it
             }
-            is WifiConfig.Wpa2PassphraseSuggestion -> SuggestionDelegate(wifiManager, config).also {
+            is WifiConfig.Wpa2PassphraseSuggestion -> SuggestionDelegate(
+                wifiManager,
+                config,
+                status
+            ).also {
                 cache[config] = it
             }
             is WifiConfig.SuggestionNetworkList -> SuggestionListDelegate(
                 config,
                 startActivityForResult
+            ).also {
+                cache[config] = it
+            }
+            is WifiConfig.PasspointConfiguration -> PasspointDelegate(
+                wifiManager,
+                config,
+                certificateFactory,
+                status
+            ).also {
+                cache[config] = it
+            }
+            is WifiConfig.EnterpriseSuggestionConfiguration -> EnterpriseSuggestionDelegate(
+                wifiManager,
+                config,
+                certificateFactory,
+                status
             ).also {
                 cache[config] = it
             }

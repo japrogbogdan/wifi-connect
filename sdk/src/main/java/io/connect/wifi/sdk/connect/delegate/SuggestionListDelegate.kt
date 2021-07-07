@@ -18,6 +18,7 @@ import io.connect.wifi.sdk.config.WifiConfig
  *
  * @since 1.0.1
  */
+@Deprecated("Unused")
 @RequiresApi(Build.VERSION_CODES.Q)
 internal class SuggestionListDelegate(
     private val rule: WifiConfig.SuggestionNetworkList,

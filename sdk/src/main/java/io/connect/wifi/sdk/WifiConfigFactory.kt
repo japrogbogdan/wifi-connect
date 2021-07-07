@@ -1,6 +1,10 @@
 package io.connect.wifi.sdk
 
 import android.os.Build
+import io.connect.wifi.sdk.Constants.Companion.TYPE_PASSPOINT_AOUCP
+import io.connect.wifi.sdk.Constants.Companion.TYPE_WPA2_ENTERPRISE_SUGGESTION
+import io.connect.wifi.sdk.Constants.Companion.TYPE_WPA2_SUGGESTION
+import io.connect.wifi.sdk.Constants.Companion.TYPE_WPA2_SUPPORT
 import io.connect.wifi.sdk.config.WifiConfig
 
 /**
@@ -36,6 +40,73 @@ internal class WifiConfigFactory {
         if (cached != null) return cached
 
         return when {
+            rule.ruleName == TYPE_WPA2_SUPPORT -> {
+                rule.ssid?.let { id ->
+                    rule.password?.let { pass ->
+                        WifiConfig.SupportNetworkWpa2(id, pass, rule.hidden).also {
+                            cache[rule] = it
+                        }
+                    }
+                }
+            }
+            rule.ruleName == TYPE_WPA2_SUGGESTION -> {
+                rule.ssid?.let { id ->
+                    rule.password?.let { pass ->
+                        WifiConfig.Wpa2PassphraseSuggestion(id, pass).also {
+                            cache[rule] = it
+                        }
+                    }
+                }
+            }
+            rule.ruleName == TYPE_PASSPOINT_AOUCP -> {
+                rule.password?.let { password ->
+                    rule.fqdn?.let { fqdn ->
+                        rule.username?.let { username ->
+                            rule.eapType?.let { eapType ->
+                                rule.nonEapInnerMethod?.let { nonEapInnerMethod ->
+                                    rule.friendlyName?.let { friendlyName ->
+                                        rule.realm?.let { realm ->
+                                            rule.caCertificate?.let { certificate ->
+                                                WifiConfig.PasspointConfiguration(
+                                                    password = password,
+                                                    fqdn = fqdn,
+                                                    username = username,
+                                                    eapType = eapType,
+                                                    nonEapInnerMethod = nonEapInnerMethod,
+                                                    friendlyName = friendlyName,
+                                                    realm = realm,
+                                                    caCertificate = certificate
+                                                ).also {
+                                                    cache[rule] = it
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            rule.ruleName == TYPE_WPA2_ENTERPRISE_SUGGESTION -> {
+                rule.password?.let { password ->
+                    rule.ssid?.let { ssid ->
+                        rule.identity?.let { identity ->
+                            rule.caCertificate?.let { certificate ->
+                                WifiConfig.EnterpriseSuggestionConfiguration(
+                                    ssid = ssid,
+                                    password = password,
+                                    identity = identity,
+                                    caCertificate = certificate
+                                ).also {
+                                    cache[rule] = it
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             Build.VERSION.SDK_INT == 29 -> {
                 rule.ssid?.let { id ->
                     rule.password?.let { pass ->

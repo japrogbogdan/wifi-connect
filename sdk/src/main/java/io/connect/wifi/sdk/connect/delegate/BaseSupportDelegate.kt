@@ -5,6 +5,9 @@ import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
 import android.os.Build
 import androidx.annotation.RequiresApi
+import io.connect.wifi.sdk.ConnectStatus
+import io.connect.wifi.sdk.config.WifiConfig
+import java.lang.Exception
 import java.util.regex.Pattern
 
 /**
@@ -15,7 +18,10 @@ import java.util.regex.Pattern
  * @since 1.0.1
  */
 @RequiresApi(Build.VERSION_CODES.P)
-abstract class BaseSupportDelegate(private val wifiManager: WifiManager) : ConnectionDelegate {
+abstract class BaseSupportDelegate(
+    private val wifiManager: WifiManager,
+    private val status: ((ConnectStatus) -> Unit)? = null
+) : ConnectionDelegate {
     /**
      * We use [android.net.wifi.WifiConfiguration] to connect to wifi
      */
@@ -26,6 +32,7 @@ abstract class BaseSupportDelegate(private val wifiManager: WifiManager) : Conne
      * Make delegate implementation available for connection
      */
     override fun prepareDelegate() {
+        status?.invoke(ConnectStatus.Processing)
         connectToWifi()
         changeNetworkCommon()
     }
@@ -84,7 +91,8 @@ abstract class BaseSupportDelegate(private val wifiManager: WifiManager) : Conne
             if (wifiManager.enableNetwork(networkId, true)) {
                 wifiManager.saveConfiguration()
             }
-        }
+            status?.invoke(ConnectStatus.Success)
+        } else status?.invoke(ConnectStatus.Error(Exception("Can't add network")))
     }
 
     @SuppressLint("MissingPermission")

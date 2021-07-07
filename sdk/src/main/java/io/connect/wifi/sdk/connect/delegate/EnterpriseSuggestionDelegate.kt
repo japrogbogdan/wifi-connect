@@ -1,51 +1,51 @@
 package io.connect.wifi.sdk.connect.delegate
 
+import android.net.wifi.WifiEnterpriseConfig
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSuggestion
 import android.os.Build
 import androidx.annotation.RequiresApi
 import io.connect.wifi.sdk.ConnectStatus
+import io.connect.wifi.sdk.cerificate.CertificateFactory
 import io.connect.wifi.sdk.config.WifiConfig
+import java.lang.Exception
 
-/**
- * @suppress Internal api
- *
- * Delegate implementation for WifiConfig.Wpa2PassphraseSuggestion
- *
- * @see io.connect.wifi.sdk.config.WifiConfig.Wpa2PassphraseSuggestion
- *
- * @since 1.0.1
- */
 @RequiresApi(Build.VERSION_CODES.Q)
-internal class SuggestionDelegate(
+internal class EnterpriseSuggestionDelegate(
     private val wifiManager: WifiManager,
-    private val rule: WifiConfig.Wpa2PassphraseSuggestion,
+    private val rule: WifiConfig.EnterpriseSuggestionConfiguration,
+    private val certificateFactory: CertificateFactory,
     private val status: (ConnectStatus) -> Unit
 ) : ConnectionDelegate {
 
-    private val suggestion = WifiNetworkSuggestion.Builder().apply {
-        setPriority(Int.MAX_VALUE)
-        setSsid(rule.ssid)
-        setWpa2Passphrase(rule.password)
-    }
-    private val suggestions = ArrayList<WifiNetworkSuggestion>()
+    private val suggestions = ArrayList<WifiNetworkSuggestion> ()
 
-    /**
-     * Make delegate implementation available for connection
-     */
+    private val configuration = WifiEnterpriseConfig().apply {
+        eapMethod = WifiEnterpriseConfig.Eap.TTLS
+        phase2Method = WifiEnterpriseConfig.Phase2.MSCHAPV2
+        identity = rule.identity
+        password = rule.password
+    }
+
     override fun prepareDelegate() {
-        suggestions.clear()
-        suggestions.add(suggestion.build())
+
     }
 
-    /**
-     * Connect to wifi using previously created delegate implementation
-     */
     override fun connect() {
         status.invoke(ConnectStatus.Processing)
-        wifiManager.removeNetworkSuggestions(suggestions)
-        val status = wifiManager.addNetworkSuggestions(suggestions)
-        readStatus(status)
+        certificateFactory.createCertificate(rule.caCertificate)?.let { cert ->
+            configuration.caCertificate = cert
+            val suggestion: WifiNetworkSuggestion = WifiNetworkSuggestion.Builder()
+                .setWpa2EnterpriseConfig(configuration)
+                .setSsid(rule.ssid)
+                .build()
+
+            suggestions.add(suggestion)
+
+            wifiManager.removeNetworkSuggestions(suggestions)
+            val status = wifiManager.addNetworkSuggestions(suggestions)
+            readStatus(status)
+        }  ?: status.invoke(ConnectStatus.Error(Exception("Missing certificate")))
     }
 
     private fun readStatus(statusCode: Int) {

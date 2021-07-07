@@ -1,6 +1,7 @@
 package io.connect.wifi.sdk
 
 import android.app.Activity
+import java.lang.ref.SoftReference
 
 /**
  * Entry point of SDK.
@@ -12,12 +13,23 @@ import android.app.Activity
  */
 class WifiConnectionCommander(private val activity: Activity) {
 
+    private var controller: SoftReference<Controller?>? = null
+
     /**
      * Start connection by passing your WifiRule instance
      *
      * @see io.connect.wifi.sdk.WifiRule
      */
     fun connectByRule(rule: WifiRule) {
-        Controller.startConnection(activity, rule)
+        if (controller == null) {
+            val reference = Controller()
+            controller = SoftReference(reference)
+        }
+        controller?.get()?.startConnection(activity, rule)
+    }
+
+    fun closeConnection() {
+        controller?.get()?.resetConnection()
+        controller = null
     }
 }

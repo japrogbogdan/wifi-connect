@@ -7,7 +7,25 @@ package io.connect.wifi.sdk.config
  *
  * @since 1.0.1
  */
-internal sealed class WifiConfig(open val ssid: String) {
+internal sealed class WifiConfig(open val ssid: String? = null) {
+
+    data class PasspointConfiguration(
+        val password: String,
+        val fqdn: String,
+        val username: String,
+        val eapType: String,
+        val nonEapInnerMethod: String,
+        val friendlyName: String,
+        val realm: String,
+        val caCertificate: String
+    ) : WifiConfig()
+
+    data class EnterpriseSuggestionConfiguration(
+        override val ssid: String,
+        val password: String,
+        val identity: String,
+        val caCertificate: String
+    ) : WifiConfig(ssid)
 
     /**
      * We use this configuration for android 29 version.
@@ -18,6 +36,7 @@ internal sealed class WifiConfig(open val ssid: String) {
     /**
      * We use this configuration for android 30 and above version.
      */
+    @Deprecated("Unused")
     data class SuggestionNetworkList(override val ssid: String, val password: String) :
         WifiConfig(ssid)
 
@@ -27,6 +46,7 @@ internal sealed class WifiConfig(open val ssid: String) {
      *
      * @see io.connect.wifi.sdk.NetworkEncryption.WEP
      */
+    @Deprecated("Unused")
     data class SupportNetworkWep(
         override val ssid: String,
         val password: String,
@@ -51,6 +71,7 @@ internal sealed class WifiConfig(open val ssid: String) {
      *
      * @see io.connect.wifi.sdk.NetworkEncryption.WPA2EAP
      */
+    @Deprecated("Unused")
     data class SupportNetworkWpa2Eap(
         override val ssid: String,
         val password: String,

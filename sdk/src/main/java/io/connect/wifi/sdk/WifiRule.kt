@@ -8,6 +8,8 @@ package io.connect.wifi.sdk
  */
 class WifiRule private constructor(
 
+    val ruleName: String?,
+
     /**
      * @see io.connect.wifi.sdk.WifiRule.Builder.ssid
      */
@@ -46,13 +48,23 @@ class WifiRule private constructor(
     /**
      * @see io.connect.wifi.sdk.WifiRule.Builder.phase2Method
      */
-    val phase2Method: Phase2Method?
+    val phase2Method: Phase2Method?,
+
+    val fqdn: String?,
+    val username: String?,
+    val nonEapInnerMethod: String?,
+    val eapType: String?,
+    val friendlyName: String?,
+    val realm: String?,
+    val caCertificate: String?
 ) {
     /**
      * Default WifiRule builder. This is the only option to create new rule.
      * @see io.connect.wifi.sdk.WifiRule
      */
     data class Builder(
+
+        var ruleName: String? = null,
         /**
          * set wifi point name. It can't be empty
          * This is mandatory value to be set.
@@ -103,8 +115,18 @@ class WifiRule private constructor(
          * @see io.connect.wifi.sdk.Phase2Method
          * @see android.net.wifi.WifiEnterpriseConfig
          */
-        var phase2Method: Phase2Method? = null
+        var phase2Method: Phase2Method? = null,
+
+        var fqdn: String? = null,
+        var username: String? = null,
+        var nonEapInnerMethod: String? = null,
+        var eapType: String? = null,
+        var friendlyName: String? = null,
+        var realm: String? = null,
+        var caCertificate: String? = null
     ) {
+        fun ruleName(ruleName: String) = apply { this.ruleName = ruleName }
+
         /**
          * set wifi point name. It can't be empty
          * This is mandatory value to be set.
@@ -175,12 +197,28 @@ class WifiRule private constructor(
          */
         fun phase2Method(phase2Method: Phase2Method) = apply { this.phase2Method = phase2Method }
 
+        fun fqdn(fqdn: String) = apply { this.fqdn = fqdn }
+
+        fun username(username: String) = apply { this.username = username }
+
+        fun nonEapInnerMethod(nonEapInnerMethod: String) =
+            apply { this.nonEapInnerMethod = nonEapInnerMethod }
+
+        fun eapType(eapType: String) = apply { this.eapType = eapType }
+
+        fun friendlyName(friendlyName: String) = apply { this.friendlyName = friendlyName }
+
+        fun realm(realm: String) = apply { this.realm = realm }
+
+        fun caCertificate(caCertificate: String) = apply { this.caCertificate = caCertificate }
+
         /**
          * Finish building WiFiRule by creating it's new instance
          * @see io.connect.wifi.sdk.WifiRule
          * @return - new instance of WifiRule
          */
         fun build() = WifiRule(
+            ruleName,
             ssid,
             password,
             networkEncryption,
@@ -188,7 +226,14 @@ class WifiRule private constructor(
             identity,
             anonymousIdentity,
             eapMethod,
-            phase2Method
+            phase2Method,
+            fqdn,
+            username,
+            nonEapInnerMethod,
+            eapType,
+            friendlyName,
+            realm,
+            caCertificate
         )
     }
 
@@ -206,6 +251,14 @@ class WifiRule private constructor(
         if (anonymousIdentity != other.anonymousIdentity) return false
         if (eapMethod != other.eapMethod) return false
         if (phase2Method != other.phase2Method) return false
+        if (fqdn != other.fqdn) return false
+        if (username != other.username) return false
+        if (nonEapInnerMethod != other.nonEapInnerMethod) return false
+        if (eapType != other.eapType) return false
+        if (friendlyName != other.friendlyName) return false
+        if (realm != other.realm) return false
+        if (caCertificate != other.caCertificate) return false
+        if (ruleName != other.ruleName) return false
 
         return true
     }
@@ -219,6 +272,14 @@ class WifiRule private constructor(
         result = 31 * result + (anonymousIdentity?.hashCode() ?: 0)
         result = 31 * result + (eapMethod?.hashCode() ?: 0)
         result = 31 * result + (phase2Method?.hashCode() ?: 0)
+        result = 31 * result + (fqdn?.hashCode() ?: 0)
+        result = 31 * result + (username?.hashCode() ?: 0)
+        result = 31 * result + (nonEapInnerMethod?.hashCode() ?: 0)
+        result = 31 * result + (eapType?.hashCode() ?: 0)
+        result = 31 * result + (friendlyName?.hashCode() ?: 0)
+        result = 31 * result + (realm?.hashCode() ?: 0)
+        result = 31 * result + (caCertificate?.hashCode() ?: 0)
+        result = 31 * result + (ruleName?.hashCode() ?: 0)
         return result
     }
 

@@ -2,6 +2,7 @@ package io.connect.wifi.sdk.connect
 
 import io.connect.wifi.sdk.WifiConfigFactory
 import io.connect.wifi.sdk.WifiRule
+import java.util.concurrent.Callable
 
 /**
  * @suppress Internal api
@@ -20,14 +21,14 @@ internal class ConnectionCommand(
      * Reference for delegate object that will use internal config to connect
      */
     private var manager: ConnectionManager?
-) : Runnable {
+) {
 
     /**
      * Rule reference
      */
     var wifiRule: WifiRule? = null
 
-    override fun run() {
+    fun execute() {
         factory.createConfig(wifiRule)?.let { config ->
             manager?.beginConnection(config)
         }

@@ -2,7 +2,10 @@ package io.connect.wifi.sdk.connect
 
 import android.content.Intent
 import android.net.wifi.WifiManager
+import io.connect.wifi.sdk.ConnectStatus
+import io.connect.wifi.sdk.cerificate.CertificateFactory
 import io.connect.wifi.sdk.config.WifiConfig
+import java.lang.Exception
 
 /**
  * @suppress Internal api
@@ -23,11 +26,15 @@ internal class ConnectionManager(
     /**
      * we use to run [android.app.Activity.startActivityForResult] on android 30+ versions
      */
-    startActivityForResult: (Intent, Int) -> Unit
+    startActivityForResult: (Intent, Int) -> Unit,
+
+    certificateFactory: CertificateFactory,
+
+    private val status: (ConnectStatus) -> Unit
 ) {
 
     private val delegateFactory: DelegateFactory by lazy {
-        DelegateFactory(wifiManager, startActivityForResult)
+        DelegateFactory(wifiManager, startActivityForResult, certificateFactory, status)
     }
 
     /**
@@ -37,8 +44,12 @@ internal class ConnectionManager(
      */
     fun beginConnection(config: WifiConfig) {
         delegateFactory.provideDelegate(config)?.run {
-            prepareDelegate()
-            connect()
+            try {
+                prepareDelegate()
+                connect()
+            } catch (e: Throwable) {
+                status.invoke(ConnectStatus.Error(Exception(e)))
+            }
         }
     }
 }
