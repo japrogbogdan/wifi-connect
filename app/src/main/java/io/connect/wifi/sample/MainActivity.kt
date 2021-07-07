@@ -50,4 +50,10 @@ class MainActivity : AppCompatActivity() {
         cache.ssid = binding.inputSsid.getText()
         cache.userPass = binding.inputPassword.getText()
     }
+
+    override fun onDestroy() {
+        commander?.closeConnection()
+        commander = null
+        super.onDestroy()
+    }
 }
