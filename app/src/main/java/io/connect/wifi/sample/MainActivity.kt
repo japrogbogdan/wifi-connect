@@ -29,7 +29,11 @@ class MainActivity : AppCompatActivity() {
         binding.btContinue.setOnClickListener {
             doConnect()
         }
-        commander = WifiConnectionCommander(activity = this)
+        commander = WifiConnectionCommander(activity = this).also {
+            it.withStatusCallback {
+                println("Connection status $it")
+            }
+        }
     }
 
     private fun doConnect(){

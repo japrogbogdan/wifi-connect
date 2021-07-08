@@ -12,7 +12,7 @@ import java.lang.ref.SoftReference
  *
  * @since 1.0.1
  */
-internal class WifiConnectionCommander(private val activity: Context) {
+class WifiConnectionCommander(private val activity: Context) {
 
     private var controller: SoftReference<Controller?>? = null
 
