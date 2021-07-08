@@ -42,6 +42,7 @@ internal class Controller {
     private var activityReference: SoftReference<Activity>? = null
     private var certificateFactory: CertificateFactoryImpl? = null
     private var currentFuture: Future<*>? = null
+    private var statusCallback : ((ConnectStatus) -> Unit)? = null
 
     /**
      * Start connection by rules.
@@ -58,6 +59,10 @@ internal class Controller {
         doConnect(rule)
     }
 
+    fun addStatusCallback(callback: (ConnectStatus) -> Unit) {
+        statusCallback = callback
+    }
+
     private val startActivityForResult: (Intent, Int) -> Unit = { intent, i ->
         mainThreadHandler.post {
             activityReference?.get()?.startActivityForResult(intent, i)
@@ -65,7 +70,7 @@ internal class Controller {
     }
 
     private val connectStatus: (ConnectStatus) -> Unit = { status ->
-        println("Connect status: $status")
+        statusCallback?.invoke(status)
     }
 
     /**

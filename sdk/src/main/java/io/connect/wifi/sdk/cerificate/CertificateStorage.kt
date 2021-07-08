@@ -2,7 +2,7 @@ package io.connect.wifi.sdk.cerificate
 
 import java.security.cert.X509Certificate
 
-interface CertificateStorage {
+internal interface CertificateStorage {
 
     fun cacheCertificate(key: String, cert: X509Certificate)
 

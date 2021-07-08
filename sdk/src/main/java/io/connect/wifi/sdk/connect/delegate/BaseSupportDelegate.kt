@@ -18,7 +18,7 @@ import java.util.regex.Pattern
  * @since 1.0.1
  */
 @RequiresApi(Build.VERSION_CODES.P)
-abstract class BaseSupportDelegate(
+internal abstract class BaseSupportDelegate(
     private val wifiManager: WifiManager,
     private val status: ((ConnectStatus) -> Unit)? = null
 ) : ConnectionDelegate {

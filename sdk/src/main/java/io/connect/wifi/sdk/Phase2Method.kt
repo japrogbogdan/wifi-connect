@@ -6,7 +6,7 @@ package io.connect.wifi.sdk
  *
  * @since 1.0.1
  */
-sealed class Phase2Method(val id: Int) {
+internal sealed class Phase2Method(val id: Int) {
     /**
      * @see android.net.wifi.WifiEnterpriseConfig.Phase2.NONE
      */

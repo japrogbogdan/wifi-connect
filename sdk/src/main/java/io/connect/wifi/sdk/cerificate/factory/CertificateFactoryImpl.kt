@@ -6,7 +6,7 @@ import io.connect.wifi.sdk.cerificate.CertificateStorage
 import java.io.ByteArrayInputStream
 import java.security.cert.X509Certificate
 
-class CertificateFactoryImpl(private val storage: CertificateStorage) : CertificateFactory {
+internal class CertificateFactoryImpl(private val storage: CertificateStorage) : CertificateFactory {
 
     override fun createCertificate(raw: String): X509Certificate? {
         return storage.getCachedCertificate(raw)?.let {

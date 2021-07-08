@@ -6,7 +6,7 @@ package io.connect.wifi.sdk
  *
  * @since 1.0.1
  */
-class WifiRule private constructor(
+internal class WifiRule private constructor(
 
     val ruleName: String?,
 

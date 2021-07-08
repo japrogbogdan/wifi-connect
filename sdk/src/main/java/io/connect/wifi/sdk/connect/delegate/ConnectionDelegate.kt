@@ -7,7 +7,7 @@ package io.connect.wifi.sdk.connect.delegate
  *
  * @since 1.0.1
  */
-interface ConnectionDelegate {
+internal interface ConnectionDelegate {
 
     /**
      * Make delegate implementation available for connection

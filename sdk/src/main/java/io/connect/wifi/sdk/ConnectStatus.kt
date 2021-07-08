@@ -1,6 +1,6 @@
 package io.connect.wifi.sdk
 
-sealed class ConnectStatus {
+internal sealed class ConnectStatus {
 
     object Processing : ConnectStatus()
 

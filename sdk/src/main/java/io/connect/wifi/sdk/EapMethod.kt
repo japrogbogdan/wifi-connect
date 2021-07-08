@@ -6,7 +6,7 @@ package io.connect.wifi.sdk
  *
  * @since 1.0.1
  */
-sealed class EapMethod(val id: Int) {
+internal sealed class EapMethod(val id: Int) {
     /**
      * @see android.net.wifi.WifiEnterpriseConfig.Eap.NONE
      */

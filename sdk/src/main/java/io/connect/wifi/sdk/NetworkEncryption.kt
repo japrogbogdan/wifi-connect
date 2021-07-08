@@ -5,7 +5,7 @@ package io.connect.wifi.sdk
  *
  * @since 1.0.1
  */
-sealed class NetworkEncryption {
+internal sealed class NetworkEncryption {
     /**
      * @suppress Not Recommended option.
      * Can use WifiConfiguration.AuthAlgorithm.SHARED authentication
