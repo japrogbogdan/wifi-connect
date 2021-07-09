@@ -90,7 +90,7 @@ internal class Controller {
         }
 
         if (command == null) {
-            command = ConnectionCommand(factory, manager)
+            command = ConnectionCommand(factory, manager, connectStatus)
         }
     }
 
@@ -118,6 +118,7 @@ internal class Controller {
         certificateFactory = null
         manager = null
         command = null
+        statusCallback = null
     }
 
     private fun cancelConnect() {

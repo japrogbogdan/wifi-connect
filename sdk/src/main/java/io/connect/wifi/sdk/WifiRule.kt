@@ -283,5 +283,9 @@ class WifiRule private constructor(
         return result
     }
 
+    override fun toString(): String {
+        return "WifiRule(ruleName=$ruleName, ssid=$ssid, password=$password, networkEncryption=$networkEncryption, hidden=$hidden, identity=$identity, anonymousIdentity=$anonymousIdentity, eapMethod=$eapMethod, phase2Method=$phase2Method, fqdn=$fqdn, username=$username, nonEapInnerMethod=$nonEapInnerMethod, eapType=$eapType, friendlyName=$friendlyName, realm=$realm, caCertificate=$caCertificate)"
+    }
+
 
 }

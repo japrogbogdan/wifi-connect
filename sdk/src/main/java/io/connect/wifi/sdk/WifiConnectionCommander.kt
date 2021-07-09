@@ -1,6 +1,5 @@
 package io.connect.wifi.sdk
 
-import android.app.Activity
 import android.content.Context
 import java.lang.ref.SoftReference
 
@@ -22,14 +21,19 @@ class WifiConnectionCommander(private val activity: Context) {
      * @see io.connect.wifi.sdk.WifiRule
      */
     fun connectByRule(rule: WifiRule) {
+        makeSureWeHaveController()
+        controller?.get()?.startConnection(activity, rule)
+    }
+
+    private fun makeSureWeHaveController(){
         if (controller == null) {
             val reference = Controller()
             controller = SoftReference(reference)
         }
-        controller?.get()?.startConnection(activity, rule)
     }
 
     fun withStatusCallback(status: (ConnectStatus) -> Unit) {
+        makeSureWeHaveController()
         controller?.get()?.addStatusCallback(status)
     }
 

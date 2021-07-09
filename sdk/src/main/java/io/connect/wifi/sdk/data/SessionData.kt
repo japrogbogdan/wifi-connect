@@ -15,7 +15,7 @@ internal data class SessionData(
             put("platform_version", info.platformVersion)
             put("model", info.model)
             put("vendor", info.vendor)
-            put("hs20_support", info.supportHs20)
+            put("hs20_support", info.supportHs20.toString())
         }
         val json = JSONObject().apply {
             put("user_id", userId)

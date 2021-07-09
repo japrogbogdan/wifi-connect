@@ -1,8 +1,8 @@
 package io.connect.wifi.sdk.connect
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.wifi.WifiManager
+import android.os.Build
 import io.connect.wifi.sdk.ConnectStatus
 import io.connect.wifi.sdk.cerificate.CertificateFactory
 import io.connect.wifi.sdk.config.WifiConfig
@@ -51,7 +51,6 @@ internal class DelegateFactory(
      *
      * @see io.connect.wifi.sdk.connect.delegate.ConnectionDelegate
      */
-    @SuppressLint("NewApi")
     fun provideDelegate(config: WifiConfig): ConnectionDelegate? {
 
         val cached: ConnectionDelegate? = cache[config]
@@ -67,34 +66,50 @@ internal class DelegateFactory(
             is WifiConfig.SupportNetworkWpa2Eap -> Wpa2EapDelegate(wifiManager, config).also {
                 cache[config] = it
             }
-            is WifiConfig.Wpa2PassphraseSuggestion -> SuggestionDelegate(
-                wifiManager,
-                config,
-                status
-            ).also {
-                cache[config] = it
+            is WifiConfig.Wpa2PassphraseSuggestion -> {
+                if (Build.VERSION.SDK_INT >= 29)
+                    SuggestionDelegate(
+                        wifiManager,
+                        config,
+                        status
+                    ).also {
+                        cache[config] = it
+                    }
+                else null
             }
-            is WifiConfig.SuggestionNetworkList -> SuggestionListDelegate(
-                config,
-                startActivityForResult
-            ).also {
-                cache[config] = it
+            is WifiConfig.SuggestionNetworkList -> {
+                if (Build.VERSION.SDK_INT >= 29)
+                    SuggestionListDelegate(
+                        config,
+                        startActivityForResult
+                    ).also {
+                        cache[config] = it
+                    }
+                else null
             }
-            is WifiConfig.PasspointConfiguration -> PasspointDelegate(
-                wifiManager,
-                config,
-                certificateFactory,
-                status
-            ).also {
-                cache[config] = it
+            is WifiConfig.PasspointConfiguration -> {
+                if (Build.VERSION.SDK_INT >= 26)
+                    PasspointDelegate(
+                        wifiManager,
+                        config,
+                        certificateFactory,
+                        status
+                    ).also {
+                        cache[config] = it
+                    }
+                else null
             }
-            is WifiConfig.EnterpriseSuggestionConfiguration -> EnterpriseSuggestionDelegate(
-                wifiManager,
-                config,
-                certificateFactory,
-                status
-            ).also {
-                cache[config] = it
+            is WifiConfig.EnterpriseSuggestionConfiguration -> {
+                if (Build.VERSION.SDK_INT >= 29)
+                    EnterpriseSuggestionDelegate(
+                        wifiManager,
+                        config,
+                        certificateFactory,
+                        status
+                    ).also {
+                        cache[config] = it
+                    }
+                else null
             }
             else -> null
         }

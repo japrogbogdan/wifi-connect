@@ -18,7 +18,7 @@ internal class CertificateFactoryImpl(private val storage: CertificateStorage) :
 
     private fun loadCertificate(raw: String): X509Certificate? {
         return try {
-            val decoded = ByteArrayInputStream(Base64.encode(raw.toByteArray(), Base64.DEFAULT))
+            val decoded = ByteArrayInputStream(Base64.decode(raw, Base64.DEFAULT))
             val cert = java.security.cert.CertificateFactory.getInstance("X.509")
                 .generateCertificate(decoded) as X509Certificate
             return cert.also {

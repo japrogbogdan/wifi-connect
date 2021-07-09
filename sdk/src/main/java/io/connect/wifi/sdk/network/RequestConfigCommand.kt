@@ -15,10 +15,11 @@ internal class RequestConfigCommand(private val sessionData: SessionData) : Netw
     companion object {
         private const val URL_LINK =
             "https://api.smartregion.online/project/%d/channel/%d/get_wifi_settings"
+        private const val URL_HOST =
+            "api.smartregion.online"
     }
 
     override fun sendRequest(body: String?): String? {
-        println("Send request with body: $body")
         var connection: HttpsURLConnection? = null
         var output: OutputStream? = null
         var inputStream: InputStream? = null
@@ -35,7 +36,10 @@ internal class RequestConfigCommand(private val sessionData: SessionData) : Netw
             connection = url.openConnection() as HttpsURLConnection
             connection.apply {
                 requestMethod = "POST"
-                setRequestProperty("X-API-KEY", sessionData.apiKey)
+                setRequestProperty("x-api-key", sessionData.apiKey)
+                setRequestProperty("Content-Type", "application/json")
+                setRequestProperty("Content-Length", body?.length?.toString() ?: "0")
+                setRequestProperty("Host", URL_HOST)
                 setRequestProperty("Accept", "application/json")
                 doOutput = true
             }
@@ -57,7 +61,6 @@ internal class RequestConfigCommand(private val sessionData: SessionData) : Netw
             }
             return response.toString()
         } catch (e: Throwable) {
-            e.printStackTrace()
             null
         } finally {
             connection?.disconnect()

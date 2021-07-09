@@ -35,21 +35,7 @@ internal class SessionExecutor(
     private var currentFuture: Future<*>? = null
     private val queue = LinkedList<WifiRule>()
     private val commander: WifiConnectionCommander by lazy {
-        WifiConnectionCommander(context).apply {
-            withStatusCallback {
-                when (it) {
-                    ConnectStatus.Success -> {
-                        queue.clear()
-                        callback?.onStatusChanged(WiFiSessionStatus.Success)
-                    }
-                    is ConnectStatus.Error -> {
-                        startIteration()
-                    }
-                    else -> {
-                    }
-                }
-            }
-        }
+        WifiConnectionCommander(context)
     }
 
     fun start() {
@@ -76,6 +62,19 @@ internal class SessionExecutor(
 
     private fun startIteration() {
         queue.poll()?.let {
+            commander.withStatusCallback {
+                when (it) {
+                    ConnectStatus.Success -> {
+                        queue.clear()
+                        callback?.onStatusChanged(WiFiSessionStatus.Success)
+                    }
+                    is ConnectStatus.Error -> {
+                        startIteration()
+                    }
+                    else -> {
+                    }
+                }
+            }
             commander.connectByRule(it)
         } ?: let {
             callback?.onStatusChanged(WiFiSessionStatus.Error(Exception("Missing wifi configs")))

@@ -50,6 +50,8 @@ internal class ConnectionManager(
             } catch (e: Throwable) {
                 status.invoke(ConnectStatus.Error(Exception(e)))
             }
+        } ?: kotlin.run {
+            status.invoke(ConnectStatus.Error(Exception("Can't use wifi config")))
         }
     }
 }

@@ -16,7 +16,6 @@ import io.connect.wifi.sdk.config.WifiConfig
  * @since 1.0.1
  */
 @Deprecated("Unused")
-@RequiresApi(Build.VERSION_CODES.P)
 internal class WebDelegate(
     wifiManager: WifiManager,
     private val rule: WifiConfig.SupportNetworkWep

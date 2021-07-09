@@ -16,7 +16,6 @@ import io.connect.wifi.sdk.config.WifiConfig
  *
  * @since 1.0.1
  */
-@RequiresApi(Build.VERSION_CODES.P)
 internal class Wpa2Delegate(
     wifiManager: WifiManager,
     private val rule: WifiConfig.SupportNetworkWpa2,
