@@ -58,9 +58,21 @@ interface WifiSessionCallback {
 }
 
 sealed class WiFiSessionStatus {
-    object RequestConfigs : WiFiSessionStatus()
-    object Connecting : WiFiSessionStatus()
-    object Success : WiFiSessionStatus()
+    object RequestConfigs : WiFiSessionStatus() {
+        override fun toString() = "RequestConfigs"
+    }
+
+    object Connecting : WiFiSessionStatus() {
+        override fun toString() = "Connecting"
+    }
+
+    object Success : WiFiSessionStatus() {
+        override fun toString() = "Success"
+    }
+
     data class Error(val reason: Exception) : WiFiSessionStatus()
-    object CancelSession : WiFiSessionStatus()
+
+    object CancelSession : WiFiSessionStatus() {
+        override fun toString() = "CancelSession"
+    }
 }
