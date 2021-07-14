@@ -76,4 +76,10 @@ internal class SuggestionDelegate(
 
         }
     }
+
+    override fun toString(): String {
+        return "SuggestionDelegate(rule=$rule)"
+    }
+
+
 }

@@ -20,11 +20,13 @@ class WifiSession private constructor(
     fun startSession() {
         val data = SessionData(apiKey, channelId, projectId, userId)
         val dump = DeviceDump(context).getDataDump()
+        LogUtils.debug("[WifiSession] Start session:\ndata:$data\ndump:$dump")
         session = SessionExecutor(context, data, dump, callback)
         session?.start()
     }
 
     fun cancelSession() {
+        LogUtils.debug("[WifiSession] Cancel session")
         session?.cancel()
     }
 

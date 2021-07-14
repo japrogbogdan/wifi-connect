@@ -39,4 +39,10 @@ internal class WebDelegate(
         }
         updateNetwork()
     }
+
+    override fun toString(): String {
+        return "WebDelegate(rule=$rule)"
+    }
+
+
 }

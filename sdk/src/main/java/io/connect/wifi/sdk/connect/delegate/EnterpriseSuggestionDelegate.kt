@@ -76,4 +76,10 @@ internal class EnterpriseSuggestionDelegate(
 
         }
     }
+
+    override fun toString(): String {
+        return "EnterpriseSuggestionDelegate(rule=$rule)"
+    }
+
+
 }

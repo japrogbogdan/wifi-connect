@@ -22,10 +22,12 @@ class WifiConnectionCommander(private val activity: Context) {
      */
     fun connectByRule(rule: WifiRule) {
         makeSureWeHaveController()
-        controller?.get()?.startConnection(activity, rule)
+        controller?.get()?.startConnection(activity, rule) ?: kotlin.run {
+            LogUtils.debug("[WifiConnectionCommander] Can't start connection. Missing controller")
+        }
     }
 
-    private fun makeSureWeHaveController(){
+    private fun makeSureWeHaveController() {
         if (controller == null) {
             val reference = Controller()
             controller = SoftReference(reference)
@@ -34,7 +36,9 @@ class WifiConnectionCommander(private val activity: Context) {
 
     fun withStatusCallback(status: (ConnectStatus) -> Unit) {
         makeSureWeHaveController()
-        controller?.get()?.addStatusCallback(status)
+        controller?.get()?.addStatusCallback(status) ?: kotlin.run {
+            LogUtils.debug("[WifiConnectionCommander] Can't add status callback. Missing controller")
+        }
     }
 
     fun closeConnection() {

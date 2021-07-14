@@ -78,6 +78,7 @@ internal class Controller {
      */
     private fun initParams(context: Context) {
         if (manager == null) {
+            LogUtils.debug("[Controller] init references")
             val wifi =
                 context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
@@ -99,6 +100,7 @@ internal class Controller {
         cancelConnect()
         currentFuture = backgroundExecutor.execute(
             func = {
+                LogUtils.debug("[Controller] try connect with rule $rule")
                 command?.let {
                     it.wifiRule = rule
                     it.execute()

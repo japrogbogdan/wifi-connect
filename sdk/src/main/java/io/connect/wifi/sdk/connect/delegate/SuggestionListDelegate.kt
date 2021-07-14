@@ -52,4 +52,10 @@ internal class SuggestionListDelegate(
         }
         startActivityForResult(intent, 0)
     }
+
+    override fun toString(): String {
+        return "SuggestionListDelegate(rule=$rule)"
+    }
+
+
 }

@@ -53,4 +53,10 @@ internal class PasspointDelegate(
             status.invoke(ConnectStatus.Success)
         } ?: status.invoke(ConnectStatus.Error(Exception("Missing certificate")))
     }
+
+    override fun toString(): String {
+        return "PasspointDelegate(rule=$rule)"
+    }
+
+
 }

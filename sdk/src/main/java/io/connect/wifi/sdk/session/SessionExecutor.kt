@@ -39,6 +39,7 @@ internal class SessionExecutor(
     }
 
     fun start() {
+        LogUtils.debug("[SessionExecutor] Request remote configs")
         callback?.onStatusChanged(WiFiSessionStatus.RequestConfigs)
         currentFuture = backgroundExecutor.execute(
             func = {
@@ -48,12 +49,15 @@ internal class SessionExecutor(
             },
             resultHandler = mainThreadHandler,
             success = {
+                LogUtils.debug("[SessionExecutor] Received ${it.size} remote configs")
                 queue.addAll(it)
             },
             error = {
+                LogUtils.debug("[SessionExecutor] Request configs error", it)
                 callback?.onStatusChanged(WiFiSessionStatus.Error(Exception(it)))
             },
             complete = {
+                LogUtils.debug("[SessionExecutor] Request remote finished")
                 callback?.onStatusChanged(WiFiSessionStatus.Connecting)
                 startIteration()
             }
@@ -61,22 +65,26 @@ internal class SessionExecutor(
     }
 
     private fun startIteration() {
-        queue.poll()?.let {
+        queue.poll()?.let { rule ->
+            LogUtils.debug("[SessionExecutor] Try connect by rule $rule")
             commander.withStatusCallback {
                 when (it) {
                     ConnectStatus.Success -> {
+                        LogUtils.debug("[SessionExecutor] SUCCESS connect by rule $rule")
                         queue.clear()
                         callback?.onStatusChanged(WiFiSessionStatus.Success)
                     }
                     is ConnectStatus.Error -> {
+                        LogUtils.debug("[SessionExecutor] FAILED connect by rule $rule", it.reason)
                         startIteration()
                     }
                     else -> {
                     }
                 }
             }
-            commander.connectByRule(it)
+            commander.connectByRule(rule)
         } ?: let {
+            LogUtils.debug("[SessionExecutor] We don't have rules in queue")
             callback?.onStatusChanged(WiFiSessionStatus.Error(Exception("Missing wifi configs")))
         }
     }
@@ -88,5 +96,6 @@ internal class SessionExecutor(
         }
         commander.closeConnection()
         callback?.onStatusChanged(WiFiSessionStatus.CancelSession)
+        LogUtils.debug("[SessionExecutor] Canceled session")
     }
 }

@@ -3,6 +3,7 @@ package io.connect.wifi.sdk.connect
 import android.content.Intent
 import android.net.wifi.WifiManager
 import io.connect.wifi.sdk.ConnectStatus
+import io.connect.wifi.sdk.LogUtils
 import io.connect.wifi.sdk.cerificate.CertificateFactory
 import io.connect.wifi.sdk.config.WifiConfig
 import java.lang.Exception
@@ -43,14 +44,18 @@ internal class ConnectionManager(
      * @see io.connect.wifi.sdk.config.WifiConfig
      */
     fun beginConnection(config: WifiConfig) {
+        LogUtils.debug("[ConnectionManager] create delegate for wifi config $config")
         delegateFactory.provideDelegate(config)?.run {
             try {
                 prepareDelegate()
+                LogUtils.debug("[ConnectionManager] Try connect for delegate $this")
                 connect()
             } catch (e: Throwable) {
+                LogUtils.debug("[ConnectionManager] Failed connect for delegate $this", e)
                 status.invoke(ConnectStatus.Error(Exception(e)))
             }
         } ?: kotlin.run {
+            LogUtils.debug("[ConnectionManager] failed to create delegate for wifi config $config")
             status.invoke(ConnectStatus.Error(Exception("Can't use wifi config")))
         }
     }

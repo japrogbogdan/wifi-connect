@@ -1,5 +1,6 @@
 package io.connect.wifi.sdk.network
 
+import io.connect.wifi.sdk.LogUtils
 import io.connect.wifi.sdk.data.SessionData
 import java.io.BufferedReader
 import java.io.InputStream
@@ -33,6 +34,7 @@ internal class RequestConfigCommand(private val sessionData: SessionData) : Netw
                         sessionData.channelId
                     )
                 )
+            LogUtils.debug("[RequestConfigCommand] Begin request:\nurl: $url\nbody: $body")
             connection = url.openConnection() as HttpsURLConnection
             connection.apply {
                 requestMethod = "POST"
@@ -49,7 +51,7 @@ internal class RequestConfigCommand(private val sessionData: SessionData) : Netw
                 val input = it.toByteArray()
                 output?.write(input, 0, input.size)
             }
-
+            LogUtils.debug("[RequestConfigCommand] Body sent")
             inputStream = connection.inputStream
             val reader = BufferedReader(InputStreamReader(inputStream, "utf-8"))
 
@@ -59,8 +61,11 @@ internal class RequestConfigCommand(private val sessionData: SessionData) : Netw
                 response.append(responseLine.trim())
                 responseLine = reader.readLine()
             }
-            return response.toString()
+            return response.toString().also {
+                LogUtils.debug("[RequestConfigCommand] Response received\n$it")
+            }
         } catch (e: Throwable) {
+            LogUtils.debug("[RequestConfigCommand] Request error", e)
             null
         } finally {
             connection?.disconnect()

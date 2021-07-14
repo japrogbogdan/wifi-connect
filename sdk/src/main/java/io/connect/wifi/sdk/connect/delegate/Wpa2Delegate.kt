@@ -42,4 +42,10 @@ internal class Wpa2Delegate(
         }
         updateNetwork()
     }
+
+    override fun toString(): String {
+        return "Wpa2Delegate(rule=$rule)"
+    }
+
+
 }
