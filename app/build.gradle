@@ -13,7 +13,6 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-        missingDimensionStrategy 'mode', 'prod','develop'
     }
 
     buildTypes {
@@ -41,7 +40,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.3.0'
-    implementation project(path: ':sdk', configuration: 'developDebug')
+    implementation project(path: ':sdk')
 //    implementation 'com.github.obolsh:wifi-connect:1.0.4'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 }

@@ -6,6 +6,8 @@ import android.os.Looper
 import android.os.Process
 import androidx.core.os.HandlerCompat
 import io.connect.wifi.sdk.*
+import io.connect.wifi.sdk.analytics.ConnectResult
+import io.connect.wifi.sdk.analytics.ConnectionResultAnalyticsCommand
 import io.connect.wifi.sdk.data.DeviceData
 import io.connect.wifi.sdk.data.SessionData
 import io.connect.wifi.sdk.network.RequestConfigCommand
@@ -15,6 +17,7 @@ import java.lang.Exception
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.concurrent.atomic.AtomicInteger
 
 internal class SessionExecutor(
     private val context: Context,
@@ -22,6 +25,11 @@ internal class SessionExecutor(
     private val dump: DeviceData,
     private val callback: WifiSessionCallback?
 ) {
+
+    companion object {
+        private const val MAX_RETRY_COUNT = 5
+        private const val RETRY_DELAY_MILLIS = 60 * 1000L
+    }
 
     private val mainThreadHandler: Handler by lazy { HandlerCompat.createAsync(Looper.getMainLooper()) }
     private val backgroundExecutor by lazy {
@@ -34,9 +42,11 @@ internal class SessionExecutor(
 
     private var currentFuture: Future<*>? = null
     private val queue = LinkedList<WifiRule>()
-    private val commander: WifiConnectionCommander by lazy {
-        WifiConnectionCommander(context)
-    }
+    private val commander: WifiConnectionCommander by lazy { WifiConnectionCommander(context) }
+    private val connectionResult = LinkedList<ConnectResult>()
+    private val retryCount = AtomicInteger(0)
+    private val retryAnalytics = Runnable { sendConnectionResultToAnalytics() }
+
 
     fun start() {
         LogUtils.debug("[SessionExecutor] Request remote configs")
@@ -45,12 +55,13 @@ internal class SessionExecutor(
             func = {
                 val request = RequestConfigCommand(sessionData)
                 val data = request.sendRequest(sessionData.toJsonBody(dump))
-                data?.toWifiRules() ?: emptyList()
+                data?.toWifiRules() ?: Pair(emptyList(), "")
             },
             resultHandler = mainThreadHandler,
             success = {
-                LogUtils.debug("[SessionExecutor] Received ${it.size} remote configs")
-                queue.addAll(it)
+                LogUtils.debug("[SessionExecutor] Received ${it.first.size} remote configs")
+                queue.addAll(it.first)
+                sessionData.traceId = it.second
             },
             error = {
                 LogUtils.debug("[SessionExecutor] Request configs error", it)
@@ -72,10 +83,21 @@ internal class SessionExecutor(
                     ConnectStatus.Success -> {
                         LogUtils.debug("[SessionExecutor] SUCCESS connect by rule $rule")
                         queue.clear()
+                        connectionResult.add(
+                            ConnectResult(rule, io.connect.wifi.sdk.analytics.ConnectStatus.Success)
+                        )
+                        sendConnectionResultToAnalytics()
                         callback?.onStatusChanged(WiFiSessionStatus.Success)
                     }
                     is ConnectStatus.Error -> {
                         LogUtils.debug("[SessionExecutor] FAILED connect by rule $rule", it.reason)
+                        connectionResult.add(
+                            ConnectResult(
+                                rule,
+                                io.connect.wifi.sdk.analytics.ConnectStatus.Error,
+                                it.reason.message
+                            )
+                        )
                         startIteration()
                     }
                     else -> {
@@ -85,6 +107,7 @@ internal class SessionExecutor(
             commander.connectByRule(rule)
         } ?: let {
             LogUtils.debug("[SessionExecutor] We don't have rules in queue")
+            sendConnectionResultToAnalytics()
             callback?.onStatusChanged(WiFiSessionStatus.Error(Exception("Missing wifi configs")))
         }
     }
@@ -95,7 +118,41 @@ internal class SessionExecutor(
             currentFuture = null
         }
         commander.closeConnection()
+        mainThreadHandler.removeCallbacks(retryAnalytics)
+        connectionResult.clear()
         callback?.onStatusChanged(WiFiSessionStatus.CancelSession)
         LogUtils.debug("[SessionExecutor] Canceled session")
+    }
+
+    private fun sendConnectionResultToAnalytics() {
+        currentFuture = backgroundExecutor.execute(
+            func = {
+                LogUtils.debug("[SessionExecutor] send connection result to internal analytics")
+                val analytics = ConnectionResultAnalyticsCommand(sessionData, dump, connectionResult)
+                analytics.send()
+            },
+            resultHandler = mainThreadHandler,
+            success = {
+                LogUtils.debug("[SessionExecutor] Delivered connection analytics info\n$connectionResult")
+                connectionResult.clear()
+            },
+            error = {
+                LogUtils.debug(
+                    "[SessionExecutor] Failed to send connection analytics info\n$connectionResult",
+                    it
+                )
+                retryDeliverAnalytics()
+            },
+            complete = {
+
+            }
+        )
+    }
+
+    private fun retryDeliverAnalytics() {
+        if (MAX_RETRY_COUNT > retryCount.getAndIncrement()) {
+            LogUtils.debug("[SessionExecutor] retryDeliverAnalytics in $RETRY_DELAY_MILLIS millis")
+            mainThreadHandler.postDelayed(retryAnalytics, RETRY_DELAY_MILLIS)
+        }
     }
 }

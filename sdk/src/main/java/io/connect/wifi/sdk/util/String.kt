@@ -5,7 +5,7 @@ import io.connect.wifi.sdk.WifiRule
 import org.json.JSONException
 import org.json.JSONObject
 
-internal fun String.toWifiRules(): List<WifiRule> {
+internal fun String.toWifiRules(): Pair<List<WifiRule>,String?> {
     val json = JSONObject(this)
     val configs = json.getJSONObject("wifi_configs")
     var config: JSONObject? = null
@@ -83,5 +83,6 @@ internal fun String.toWifiRules(): List<WifiRule> {
             rule?.let { rules.add(it) }
         }
     }
-    return rules
+    val traceId = json.getString("trace_id")
+    return Pair(rules, traceId)
 }

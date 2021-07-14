@@ -2,11 +2,12 @@ package io.connect.wifi.sdk
 
 import android.util.Log
 
-object LogUtils {
+internal object LogUtils {
 
     private const val TAG = "SmartWiFiSDK"
 
     fun debug(text: String, error: Throwable? = null) {
-        Log.e(TAG, text, error)
+        if (BuildConfig.DEBUG)
+            Log.e(TAG, text, error)
     }
 }

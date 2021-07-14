@@ -18,7 +18,7 @@ class WifiSession private constructor(
     private var session: SessionExecutor? = null
 
     fun startSession() {
-        val data = SessionData(apiKey, channelId, projectId, userId)
+        val data = SessionData(apiKey, channelId, projectId, userId, null)
         val dump = DeviceDump(context).getDataDump()
         LogUtils.debug("[WifiSession] Start session:\ndata:$data\ndump:$dump")
         session = SessionExecutor(context, data, dump, callback)
