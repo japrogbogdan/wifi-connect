@@ -29,7 +29,7 @@ internal data class SessionData(
 
     fun toConnectionResultBody(info: DeviceData, result: List<ConnectResult>): String {
         val logs = JSONArray()
-        result.map { conn ->
+        result.forEach { conn ->
             JSONObject().apply {
                 put("method", conn.rule.ruleName.orEmpty())
                 put("status", conn.status.infoName)
@@ -37,6 +37,8 @@ internal data class SessionData(
                     val end = if (error.length > 4096) 4096 else error.length
                     put("raw_error_msg", error.substring(0..end))
                 }
+            }.also {
+                logs.put(it)
             }
         }
         val json = JSONObject().apply {
@@ -44,7 +46,7 @@ internal data class SessionData(
             put("platform_version", info.platformVersion)
             put("model", info.model)
             put("vendor", info.vendor)
-            put("hs20_support", info.supportHs20.toString())
+            put("hs20_support", info.supportHs20)
             put("user_id", userId)
             put("trace_id", traceId.orEmpty())
             put("logs", logs)
