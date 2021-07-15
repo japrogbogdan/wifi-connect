@@ -34,7 +34,7 @@ internal data class SessionData(
                 put("method", conn.rule.ruleName.orEmpty())
                 put("status", conn.status.infoName)
                 conn.raw?.let { error ->
-                    val end = if (error.length > 4096) 4096 else error.length
+                    val end = if (error.length > 4096) 4095 else error.length - 1
                     put("raw_error_msg", error.substring(0..end))
                 }
             }.also {
