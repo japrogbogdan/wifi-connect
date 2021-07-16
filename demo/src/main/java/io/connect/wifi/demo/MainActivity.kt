@@ -57,6 +57,9 @@ class MainActivity : AppCompatActivity() {
             val channel = binding.inputChannelId.getText().toInt()
             val project = binding.inputProjectId.getText().toInt()
 
+            //удаляем сессию, если уже есть такая
+            cleanSession()
+
             wifi = WifiSession.Builder(this)
                 .apiKey(binding.inputToken.getText())
                 .userId(binding.inputUserId.getText())
@@ -88,7 +91,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        wifi?.cancelSession()
+        cleanSession()
         super.onDestroy()
+    }
+
+    private fun cleanSession(){
+        wifi?.let {
+            it.cancelSession()
+            wifi = null
+        }
     }
 }
