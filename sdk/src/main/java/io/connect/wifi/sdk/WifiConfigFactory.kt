@@ -40,7 +40,7 @@ internal class WifiConfigFactory {
         if (cached != null) return cached
 
         return when {
-            rule.ruleName == TYPE_WPA2_SUPPORT -> {
+            (rule.ruleName == TYPE_WPA2_SUPPORT) -> {
                 rule.ssid?.let { id ->
                     rule.password?.let { pass ->
                         WifiConfig.SupportNetworkWpa2(id, pass, rule.hidden).also {
@@ -49,7 +49,7 @@ internal class WifiConfigFactory {
                     }
                 }
             }
-            rule.ruleName == TYPE_WPA2_SUGGESTION -> {
+            (rule.ruleName == TYPE_WPA2_SUGGESTION) -> {
                 rule.ssid?.let { id ->
                     rule.password?.let { pass ->
                         WifiConfig.Wpa2PassphraseSuggestion(id, pass).also {
@@ -58,7 +58,7 @@ internal class WifiConfigFactory {
                     }
                 }
             }
-            rule.ruleName == TYPE_PASSPOINT_AOUCP -> {
+            (rule.ruleName == TYPE_PASSPOINT_AOUCP) -> {
                 rule.password?.let { password ->
                     rule.fqdn?.let { fqdn ->
                         rule.username?.let { username ->
@@ -88,7 +88,7 @@ internal class WifiConfigFactory {
                     }
                 }
             }
-            rule.ruleName == TYPE_WPA2_ENTERPRISE_SUGGESTION -> {
+            (rule.ruleName == TYPE_WPA2_ENTERPRISE_SUGGESTION) -> {
                 rule.password?.let { password ->
                     rule.ssid?.let { ssid ->
                         rule.identity?.let { identity ->

@@ -42,10 +42,8 @@ internal class EnterpriseSuggestionDelegate(
                 .build()
 
             suggestions.add(suggestion)
-            if (Build.VERSION.SDK_INT >= 30) {
-                val existedSuggestions = wifiManager.networkSuggestions
-                wifiManager.removeNetworkSuggestions(existedSuggestions)
-            } else wifiManager.removeNetworkSuggestions(suggestions)
+
+            wifiManager.removeNetworkSuggestions(suggestions)
 
             val status = wifiManager.addNetworkSuggestions(suggestions)
             readStatus(status)
