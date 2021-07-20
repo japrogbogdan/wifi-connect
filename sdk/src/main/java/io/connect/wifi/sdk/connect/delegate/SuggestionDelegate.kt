@@ -24,7 +24,7 @@ internal class SuggestionDelegate(
 ) : ConnectionDelegate {
 
     private val suggestion = WifiNetworkSuggestion.Builder().apply {
-        setPriority(Int.MAX_VALUE)
+        setPriority(500)
         setSsid(rule.ssid)
         setWpa2Passphrase(rule.password)
     }
@@ -43,7 +43,12 @@ internal class SuggestionDelegate(
      */
     override fun connect() {
         status.invoke(ConnectStatus.Processing)
-        wifiManager.removeNetworkSuggestions(suggestions)
+
+        if (Build.VERSION.SDK_INT >= 30) {
+            val existedSuggestions = wifiManager.networkSuggestions
+            wifiManager.removeNetworkSuggestions(existedSuggestions)
+        } else wifiManager.removeNetworkSuggestions(suggestions)
+
         val status = wifiManager.addNetworkSuggestions(suggestions)
         readStatus(status)
     }

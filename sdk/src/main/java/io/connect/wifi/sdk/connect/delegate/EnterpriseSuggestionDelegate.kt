@@ -38,11 +38,15 @@ internal class EnterpriseSuggestionDelegate(
             val suggestion: WifiNetworkSuggestion = WifiNetworkSuggestion.Builder()
                 .setWpa2EnterpriseConfig(configuration)
                 .setSsid(rule.ssid)
+                .setPriority(500)
                 .build()
 
             suggestions.add(suggestion)
+            if (Build.VERSION.SDK_INT >= 30) {
+                val existedSuggestions = wifiManager.networkSuggestions
+                wifiManager.removeNetworkSuggestions(existedSuggestions)
+            } else wifiManager.removeNetworkSuggestions(suggestions)
 
-            wifiManager.removeNetworkSuggestions(suggestions)
             val status = wifiManager.addNetworkSuggestions(suggestions)
             readStatus(status)
         }  ?: status.invoke(ConnectStatus.Error(Exception("Missing certificate")))
