@@ -6,21 +6,9 @@
 
 ## Steps to add sdk to your project:
 
-Step 1: Build sdk-release.aar file
+Step 1: Copy/paste sdk-release.aar file to your dependencies directory(Let's say 'libs')
 
-Execute in commandline:
-
-```
-./gradlew sdk:addMySourcesToAar
-```
-
-Step 2: Copy/paste sdk-release.aar file to your dependencies directory:
-
-Copy sdk file from sdk/build/sdk-release.aar
-
-Paste to your direcrory (Let's say 'libs')
-
-Step 3: Add sdk aar as dependency:
+Step 2: Add sdk aar as dependency:
 
 ```
 allprojects {
@@ -40,7 +28,7 @@ dependencies {
 }
 ```
 
-Step 4. Add source of sdk (optional):
+Step 3. (Optional) Add source of sdk:
 
 In code click on one of sdk's reference classes
 

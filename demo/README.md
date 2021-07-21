@@ -1,11 +1,8 @@
-# Android Wifi Connect library
+# Android Wifi Connect library (Sample for auto connection)
 
-[Demo app for manual connection to wifi by your SSID & password](https://github.com/obolsh/wifi-connect/tree/main/app)
-
-[Demo app for automatic connection to wifi](https://github.com/obolsh/wifi-connect/tree/main/demo)
-
-[How to build sdk-release.aar file](https://github.com/obolsh/wifi-connect/tree/main/sdk)
-
+<p float="left" align="left">
+    <img src="/images/demo.jpg" width="25%" />
+</p>
 
 ## Steps to add sdk to your project:
 
@@ -112,7 +109,6 @@ Step 3. Clean session reference when navigate to other context (activity, fragme
         }
     }
 ```
-
 
 ## License
 
