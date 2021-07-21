@@ -1,67 +1,10 @@
-# Android Wifi Connect library
+# Android Wifi Connect library (Sample for manual connection)
 
 <p float="left" align="left">
     <img src="/images/sample.jpg" width="25%" />
 </p>
 
-## Steps to integrate sdk into your build:
-
-Step 1. Add the JitPack repository to your build file
-
-   Add it in your root build.gradle at the end of repositories:
-
-  ```
-  
-  allprojects {
-      repositories {
-        ...
-        maven {
-        url 'https://jitpack.io'
-        credentials {
-            username 'obolsh'
-            password 'jp_ksphc8r6itpht8gvhdekkl5hrs'
-            }
-        }
-      }
-    }
-  ```
-
-Jitpack [private repos documentation](https://jitpack.io/docs/PRIVATE/)
-
-Step 2. Add the dependency
-
-```
-dependencies {
-    ...
-    implementation 'com.github.obolsh:wifi-connect:1.0.4'
-}
-```
-
-## Steps to connect to wifi:
-
-Step 1. Build your wifi configuration:
-
-```
-val rule = WifiRule.Builder()
-        .ssid(ssid)
-        .password(pass)
-        .build()
-```
-
-Step 2. Create WifiConnectionCommander instance:
-
-```
-val commander = WifiConnectionCommander(activity = this)
-```
-
-Step 3. Start connection to wifi by sending your wifi configuration to commander:
-
-```
-commander.connectByRule(rule)
-```
-
-
-## Steps to use sdk as standalone aar file:
+## Steps to add sdk to your project:
 
 Step 1: Build sdk-release.aar file
 
@@ -97,7 +40,7 @@ dependencies {
 }
 ```
 
-Step 4. Add source of sdk:
+Step 4. Add source of sdk (optional):
 
 In code click on one of sdk's reference classes
 
@@ -109,6 +52,29 @@ Inside popup select 'libs/sdk-sources.jar'. This file is inside .aar file
 
 Reopen the same class.
 
+
+## Steps to connect to wifi by your SSID & password:
+
+Step 1. Create new wifi configuration:
+
+```
+val rule = WifiRule.Builder()
+        .ssid(ssid)
+        .password(pass)
+        .build()
+```
+
+Step 2. Create WifiConnectionCommander instance:
+
+```
+val commander = WifiConnectionCommander(activity = this)
+```
+
+Step 3. Start connection to wifi by sending your wifi configuration to commander:
+
+```
+commander.connectByRule(rule)
+```
 
 
 ## License
