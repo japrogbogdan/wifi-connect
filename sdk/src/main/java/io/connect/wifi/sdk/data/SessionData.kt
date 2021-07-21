@@ -4,6 +4,11 @@ import io.connect.wifi.sdk.analytics.ConnectResult
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ * @suppress Internal api
+ *
+ * Holder of current session info
+ */
 internal data class SessionData(
     val apiKey: String,
     val channelId: Int,

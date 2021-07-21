@@ -6,6 +6,11 @@ import io.connect.wifi.sdk.cerificate.CertificateStorage
 import java.io.ByteArrayInputStream
 import java.security.cert.X509Certificate
 
+/**
+ * @suppress Internal api
+ *
+ * Factory for X509Certificate
+ */
 internal class CertificateFactoryImpl(private val storage: CertificateStorage) : CertificateFactory {
 
     override fun createCertificate(raw: String): X509Certificate? {

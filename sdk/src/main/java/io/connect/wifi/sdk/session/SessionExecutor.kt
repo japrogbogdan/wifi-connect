@@ -19,6 +19,11 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.atomic.AtomicInteger
 
+/**
+ * @suppress Internal api
+ *
+ * Controller to handle run/stop current session
+ */
 internal class SessionExecutor(
     private val context: Context,
     private val sessionData: SessionData,
@@ -41,13 +46,38 @@ internal class SessionExecutor(
     }
 
     private var currentFuture: Future<*>? = null
+
+    /**
+     * Temporary cache for rules that we may use for connecting to wifi.
+     * We'll remove item before each connection attempts. Empty list mean that we'd tried all
+     * rules & there's no more or we didn't fetch any rule from api.
+     */
     private val queue = LinkedList<WifiRule>()
+
+    /**
+     * Commander to do connection request by rules
+     */
     private val commander: WifiConnectionCommander by lazy { WifiConnectionCommander(context) }
+
+    /**
+     * Analytics cache for connection attempt
+     */
     private val connectionResult = LinkedList<ConnectResult>()
+
+    /**
+     * Retry count for failed analytics
+     */
     private val retryCount = AtomicInteger(0)
+
+    /**
+     * Retry analytics task
+     */
     private val retryAnalytics = Runnable { sendConnectionResultToAnalytics() }
 
 
+    /**
+     * Begin session
+     */
     fun start() {
         LogUtils.debug("[SessionExecutor] Request remote configs")
         notifyStatusChanged(WiFiSessionStatus.RequestConfigs)
@@ -75,6 +105,9 @@ internal class SessionExecutor(
         )
     }
 
+    /**
+     * Try connect with rule
+     */
     private fun startIteration() {
         queue.poll()?.let { rule ->
             LogUtils.debug("[SessionExecutor] Try connect by rule $rule")
@@ -112,6 +145,9 @@ internal class SessionExecutor(
         }
     }
 
+    /**
+     * Drop session
+     */
     fun cancel() {
         currentFuture?.let {
             it.cancel(false)

@@ -3,6 +3,11 @@ package io.connect.wifi.sdk.network
 import io.connect.wifi.sdk.data.SessionData
 import java.util.*
 
+/**
+ * @suppress Internal api
+ *
+ * Send analytics api command
+ */
 internal class SendConnectionResultCommand(private val sessionData: SessionData) :
     BasePostNetworkCommand() {
 

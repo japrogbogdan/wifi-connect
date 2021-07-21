@@ -5,6 +5,11 @@ import android.content.pm.PackageManager
 import android.os.Build
 import io.connect.wifi.sdk.data.DeviceData
 
+/**
+ * @suppress Internal api
+ *
+ * Builder from current device dump
+ */
 internal class DeviceDump(private val context: Context) {
 
     fun getDataDump(): DeviceData {

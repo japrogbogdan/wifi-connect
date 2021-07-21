@@ -3,6 +3,11 @@ package io.connect.wifi.sdk.cerificate.storage
 import io.connect.wifi.sdk.cerificate.CertificateStorage
 import java.security.cert.X509Certificate
 
+/**
+ * @suppress Internal api
+ *
+ * Runtime cache for certificates
+ */
 internal class CertificateStorageImpl : CertificateStorage {
 
     private val cache = HashMap<String, X509Certificate>()

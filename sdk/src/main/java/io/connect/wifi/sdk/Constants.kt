@@ -1,5 +1,10 @@
 package io.connect.wifi.sdk
 
+/**
+ * @suppress Internal api
+ *
+ * Keep names of rule types identifiers
+ */
 internal class Constants {
 
     companion object {

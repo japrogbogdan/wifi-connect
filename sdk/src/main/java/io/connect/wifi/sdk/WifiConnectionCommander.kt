@@ -4,7 +4,7 @@ import android.content.Context
 import java.lang.ref.SoftReference
 
 /**
- * Entry point of SDK.
+ * Entry point of SDK for manual connection to wifi.
  *
  * @param activity - we required [android.app.Activity] because on android 30+ version
  * we should use its api to open other system activity. With simple [android.content.Context] we can't do it.
@@ -34,6 +34,9 @@ class WifiConnectionCommander(private val activity: Context) {
         }
     }
 
+    /**
+     * Add callback for status changes
+     */
     fun withStatusCallback(status: (ConnectStatus) -> Unit) {
         makeSureWeHaveController()
         controller?.get()?.addStatusCallback(status) ?: kotlin.run {
@@ -41,6 +44,9 @@ class WifiConnectionCommander(private val activity: Context) {
         }
     }
 
+    /**
+     * Drop connection attempt
+     */
     fun closeConnection() {
         controller?.get()?.resetConnection()
         controller = null

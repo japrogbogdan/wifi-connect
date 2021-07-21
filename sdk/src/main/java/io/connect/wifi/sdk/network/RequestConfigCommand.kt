@@ -3,6 +3,11 @@ package io.connect.wifi.sdk.network
 import io.connect.wifi.sdk.data.SessionData
 import java.util.*
 
+/**
+ * @suppress Internal api
+ *
+ * Request wifi rules to use for connection to wifi
+ */
 internal class RequestConfigCommand(private val sessionData: SessionData) :
     BasePostNetworkCommand() {
 

@@ -5,6 +5,11 @@ import io.connect.wifi.sdk.WifiRule
 import org.json.JSONException
 import org.json.JSONObject
 
+/**
+ * @suppress Internal api
+ *
+ * Parser of wifi rules from raw JSON as String to data
+ */
 internal fun String.toWifiRules(): Pair<List<WifiRule>,String?> {
     val json = JSONObject(this)
     val configs = json.getJSONObject("wifi_configs")
