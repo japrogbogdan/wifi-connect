@@ -66,6 +66,7 @@ internal fun String.toWifiRules(): Pair<List<WifiRule>,String?> {
                             .ruleName(Constants.TYPE_WPA2_SUPPORT)
                             .password(configItem.getString("password"))
                             .ssid(configItem.getString("ssid"))
+                            .successCallbackUrl(configItem.optString("cc_url"))
                             .build()
                     }
 

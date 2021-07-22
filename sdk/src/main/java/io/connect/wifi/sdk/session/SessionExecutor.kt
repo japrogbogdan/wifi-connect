@@ -7,17 +7,17 @@ import android.os.Process
 import androidx.core.os.HandlerCompat
 import io.connect.wifi.sdk.*
 import io.connect.wifi.sdk.analytics.ConnectResult
-import io.connect.wifi.sdk.analytics.ConnectionResultAnalyticsCommand
 import io.connect.wifi.sdk.data.DeviceData
 import io.connect.wifi.sdk.data.SessionData
 import io.connect.wifi.sdk.network.RequestConfigCommand
+import io.connect.wifi.sdk.task.SendAnalyticsTask
+import io.connect.wifi.sdk.task.SendSuccessConnectionTask
 import io.connect.wifi.sdk.util.execute
 import io.connect.wifi.sdk.util.toWifiRules
 import java.lang.Exception
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * @suppress Internal api
@@ -30,11 +30,6 @@ internal class SessionExecutor(
     private val dump: DeviceData,
     private val callback: WifiSessionCallback?
 ) {
-
-    companion object {
-        private const val MAX_RETRY_COUNT = 5
-        private const val RETRY_DELAY_MILLIS = 60 * 1000L
-    }
 
     private val mainThreadHandler: Handler by lazy { HandlerCompat.createAsync(Looper.getMainLooper()) }
     private val backgroundExecutor by lazy {
@@ -65,15 +60,11 @@ internal class SessionExecutor(
     private val connectionResult = LinkedList<ConnectResult>()
 
     /**
-     * Retry count for failed analytics
-     */
-    private val retryCount = AtomicInteger(0)
-
-    /**
      * Retry analytics task
      */
-    private val retryAnalytics = Runnable { sendConnectionResultToAnalytics() }
+    private var retryAnalytics: SendAnalyticsTask? = null
 
+    private var successCallback: SendSuccessConnectionTask? = null
 
     /**
      * Begin session
@@ -120,6 +111,9 @@ internal class SessionExecutor(
                             ConnectResult(rule, io.connect.wifi.sdk.analytics.ConnectStatus.Success)
                         )
                         sendConnectionResultToAnalytics()
+                        rule.successCallbackUrl?.let { i ->
+                            if (i.isNotEmpty()) triggerSuccessCallbackUrl(i)
+                        }
                         notifyStatusChanged(WiFiSessionStatus.Success)
                     }
                     is ConnectStatus.Error -> {
@@ -154,43 +148,34 @@ internal class SessionExecutor(
             currentFuture = null
         }
         commander.closeConnection()
-        mainThreadHandler.removeCallbacks(retryAnalytics)
         connectionResult.clear()
+        cleanup()
         notifyStatusChanged(WiFiSessionStatus.CancelSession)
         LogUtils.debug("[SessionExecutor] Canceled session")
     }
 
-    private fun sendConnectionResultToAnalytics() {
-        currentFuture = backgroundExecutor.execute(
-            func = {
-                LogUtils.debug("[SessionExecutor] send connection result to internal analytics")
-                val analytics =
-                    ConnectionResultAnalyticsCommand(sessionData, dump, connectionResult)
-                analytics.send()
-            },
-            resultHandler = mainThreadHandler,
-            success = {
-                LogUtils.debug("[SessionExecutor] Delivered connection analytics info\n$connectionResult")
-                connectionResult.clear()
-            },
-            error = {
-                LogUtils.debug(
-                    "[SessionExecutor] Failed to send connection analytics info\n$connectionResult",
-                    it
-                )
-                retryDeliverAnalytics()
-            },
-            complete = {
-
-            }
-        )
+    private fun cleanup() {
+        retryAnalytics?.let { mainThreadHandler.removeCallbacks(it) }
+        successCallback?.let { mainThreadHandler.removeCallbacks(it) }
+        retryAnalytics = null
+        successCallback = null
     }
 
-    private fun retryDeliverAnalytics() {
-        if (connectionResult.isNotEmpty() && MAX_RETRY_COUNT > retryCount.getAndIncrement()) {
-            LogUtils.debug("[SessionExecutor] retry deliver analytics in $RETRY_DELAY_MILLIS millis")
-            mainThreadHandler.postDelayed(retryAnalytics, RETRY_DELAY_MILLIS)
-        } else mainThreadHandler.removeCallbacks(retryAnalytics)
+    private fun sendConnectionResultToAnalytics() {
+        retryAnalytics = SendAnalyticsTask(
+            mainThreadHandler,
+            backgroundExecutor,
+            sessionData,
+            dump,
+            connectionResult
+        )
+        mainThreadHandler.post (retryAnalytics!!)
+    }
+
+    private fun triggerSuccessCallbackUrl(url: String) {
+        successCallback =
+            SendSuccessConnectionTask(mainThreadHandler, backgroundExecutor, sessionData, url)
+        mainThreadHandler.post (successCallback!!)
     }
 
     private fun notifyStatusChanged(status: WiFiSessionStatus) {

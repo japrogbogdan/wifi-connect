@@ -56,7 +56,8 @@ class WifiRule private constructor(
     val eapType: String?,
     val friendlyName: String?,
     val realm: String?,
-    val caCertificate: String?
+    val caCertificate: String?,
+    val successCallbackUrl: String?
 ) {
     /**
      * Default WifiRule builder. This is the only option to create new rule.
@@ -123,7 +124,8 @@ class WifiRule private constructor(
         var eapType: String? = null,
         var friendlyName: String? = null,
         var realm: String? = null,
-        var caCertificate: String? = null
+        var caCertificate: String? = null,
+        var successCallbackUrl: String? = null
     ) {
         fun ruleName(ruleName: String) = apply { this.ruleName = ruleName }
 
@@ -212,6 +214,9 @@ class WifiRule private constructor(
 
         fun caCertificate(caCertificate: String) = apply { this.caCertificate = caCertificate }
 
+        fun successCallbackUrl(successCallbackUrl: String) =
+            apply { this.successCallbackUrl = successCallbackUrl }
+
         /**
          * Finish building WiFiRule by creating it's new instance
          * @see io.connect.wifi.sdk.WifiRule
@@ -233,7 +238,8 @@ class WifiRule private constructor(
             eapType,
             friendlyName,
             realm,
-            caCertificate
+            caCertificate,
+            successCallbackUrl
         )
     }
 
@@ -259,6 +265,7 @@ class WifiRule private constructor(
         if (realm != other.realm) return false
         if (caCertificate != other.caCertificate) return false
         if (ruleName != other.ruleName) return false
+        if (successCallbackUrl != other.successCallbackUrl) return false
 
         return true
     }
@@ -280,11 +287,12 @@ class WifiRule private constructor(
         result = 31 * result + (realm?.hashCode() ?: 0)
         result = 31 * result + (caCertificate?.hashCode() ?: 0)
         result = 31 * result + (ruleName?.hashCode() ?: 0)
+        result = 31 * result + (successCallbackUrl?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "WifiRule(ruleName=$ruleName, ssid=$ssid, password=$password, networkEncryption=$networkEncryption, hidden=$hidden, identity=$identity, anonymousIdentity=$anonymousIdentity, eapMethod=$eapMethod, phase2Method=$phase2Method, fqdn=$fqdn, username=$username, nonEapInnerMethod=$nonEapInnerMethod, eapType=$eapType, friendlyName=$friendlyName, realm=$realm, caCertificate=$caCertificate)"
+        return "WifiRule(ruleName=$ruleName, ssid=$ssid, password=$password, networkEncryption=$networkEncryption, hidden=$hidden, identity=$identity, anonymousIdentity=$anonymousIdentity, eapMethod=$eapMethod, phase2Method=$phase2Method, fqdn=$fqdn, username=$username, nonEapInnerMethod=$nonEapInnerMethod, eapType=$eapType, friendlyName=$friendlyName, realm=$realm, caCertificate=$caCertificate, successCallbackUrl=$successCallbackUrl)"
     }
 
 
