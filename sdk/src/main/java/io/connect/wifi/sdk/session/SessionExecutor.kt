@@ -28,7 +28,8 @@ internal class SessionExecutor(
     private val context: Context,
     private val sessionData: SessionData,
     private val dump: DeviceData,
-    private val callback: WifiSessionCallback?
+    private val callback: WifiSessionCallback?,
+    private val autoDeliverSuccessCallback: Boolean
 ) {
 
     private val mainThreadHandler: Handler by lazy { HandlerCompat.createAsync(Looper.getMainLooper()) }
@@ -173,9 +174,11 @@ internal class SessionExecutor(
     }
 
     private fun triggerSuccessCallbackUrl(url: String) {
-        successCallback =
-            SendSuccessConnectionTask(mainThreadHandler, backgroundExecutor, sessionData, url)
-        mainThreadHandler.post (successCallback!!)
+        if (autoDeliverSuccessCallback){
+            successCallback =
+                SendSuccessConnectionTask(mainThreadHandler, backgroundExecutor, sessionData, url)
+            mainThreadHandler.post (successCallback!!)
+        }
     }
 
     private fun notifyStatusChanged(status: WiFiSessionStatus) {

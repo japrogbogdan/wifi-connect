@@ -59,12 +59,14 @@ private var wifi: WifiSession? = null
         val userId: String = "USER_ID"
         val channelId: Int = 1 //your channel id
         val projectId: Int = 1 //your project id
+        val triggerSuccessTracking: Boolean = true //internally trigger success tracking url by sdk
 
         wifi = WifiSession.Builder(context = this)
             .apiKey(apiKey)
             .userId(userId)
             .channelId(channelId)
             .projectId(projectId)
+            .autoDeliverSuccessCallback(triggerSuccessTracking)
             .statusCallback(object : WifiSessionCallback {
                 override fun onStatusChanged(newStatus: WiFiSessionStatus) {
                     when(newStatus){

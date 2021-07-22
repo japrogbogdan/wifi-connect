@@ -31,6 +31,10 @@ class WifiSession private constructor(
      */
     val projectId: Int,
     /**
+     * Enable/disable internal delivery of success callbacks
+     */
+    val autoDeliverSuccessCallback: Boolean,
+    /**
      * callback for status changes
      */
     val callback: WifiSessionCallback?
@@ -45,7 +49,7 @@ class WifiSession private constructor(
         val data = SessionData(apiKey, channelId, projectId, userId, null)
         val dump = DeviceDump(context).getDataDump()
         LogUtils.debug("[WifiSession] Start session:\ndata:$data\ndump:$dump")
-        session = SessionExecutor(context, data, dump, callback)
+        session = SessionExecutor(context, data, dump, callback, autoDeliverSuccessCallback)
         session?.start()
     }
 
@@ -82,6 +86,10 @@ class WifiSession private constructor(
          */
         var projectId: Int = 0,
         /**
+         * Enable/disable internal delivery of success callbacks
+         */
+        var autoDeliverSuccessCallback: Boolean = true,
+        /**
          * callback for status changes
          */
         var callback: WifiSessionCallback? = null
@@ -108,6 +116,11 @@ class WifiSession private constructor(
         fun projectId(projectId: Int) = apply { this.projectId = projectId }
 
         /**
+         * Enable/disable internal delivery of success callbacks
+         */
+        fun autoDeliverSuccessCallback(autoDeliverSuccessCallback: Boolean) = apply { this.autoDeliverSuccessCallback = autoDeliverSuccessCallback }
+
+        /**
          * callback for status changes
          */
         fun statusCallback(callback: WifiSessionCallback) = apply { this.callback = callback }
@@ -116,7 +129,7 @@ class WifiSession private constructor(
          * create new WifiSession instance with provided earlier data
          */
         fun create() =
-            WifiSession(context, apiKey.orEmpty(), userId.orEmpty(), channelId, projectId, callback)
+            WifiSession(context, apiKey.orEmpty(), userId.orEmpty(), channelId, projectId, autoDeliverSuccessCallback, callback)
     }
 }
 

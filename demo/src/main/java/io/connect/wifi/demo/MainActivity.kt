@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity() {
                 .userId(binding.inputUserId.getText())
                 .channelId(channel)
                 .projectId(project)
+                .autoDeliverSuccessCallback(true)
                 .statusCallback(object : WifiSessionCallback {
                     override fun onStatusChanged(newStatus: WiFiSessionStatus) {
                         binding.tvStatus.text =
