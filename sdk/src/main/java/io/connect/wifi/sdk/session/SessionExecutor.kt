@@ -6,9 +6,11 @@ import android.os.Looper
 import android.os.Process
 import androidx.core.os.HandlerCompat
 import io.connect.wifi.sdk.*
+import io.connect.wifi.sdk.activity.ActivityHelper
 import io.connect.wifi.sdk.analytics.ConnectResult
 import io.connect.wifi.sdk.data.DeviceData
 import io.connect.wifi.sdk.data.SessionData
+import io.connect.wifi.sdk.internal.LogUtils
 import io.connect.wifi.sdk.network.RequestConfigCommand
 import io.connect.wifi.sdk.task.SendAnalyticsTask
 import io.connect.wifi.sdk.task.SendSuccessConnectionTask
@@ -29,6 +31,7 @@ internal class SessionExecutor(
     private val sessionData: SessionData,
     private val dump: DeviceData,
     private val callback: WifiSessionCallback?,
+    private val activityHelper: ActivityHelper?,
     private val autoDeliverSuccessCallback: Boolean
 ) {
 
@@ -53,7 +56,7 @@ internal class SessionExecutor(
     /**
      * Commander to do connection request by rules
      */
-    private val commander: WifiConnectionCommander by lazy { WifiConnectionCommander(context) }
+    private val commander: WifiConnectionCommander by lazy { WifiConnectionCommander(context, activityHelper) }
 
     /**
      * Analytics cache for connection attempt

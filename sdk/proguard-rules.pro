@@ -19,3 +19,20 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class io.connect.wifi.sdk.WifiSession { *; }
+-keep class io.connect.wifi.sdk.WifiSessionCallback { *; }
+-keep class io.connect.wifi.sdk.WiFiSessionStatus { *; }
+-keep class io.connect.wifi.sdk.WifiRule { *; }
+-keep class io.connect.wifi.sdk.WifiConnectionCommander { *; }
+-keep class io.connect.wifi.sdk.Phase2Method { *; }
+-keep class io.connect.wifi.sdk.NetworkEncryption { *; }
+-keep class io.connect.wifi.sdk.EapMethod { *; }
+-keep class io.connect.wifi.sdk.ConnectStatus { *; }
+-keep class io.connect.wifi.sdk.activity.** { *; }
+
+-keepclassmembers class * extends java.lang.Enum {
+    <fields>;
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+

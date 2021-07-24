@@ -61,12 +61,20 @@ private var wifi: WifiSession? = null
         val projectId: Int = 1 //your project id
         val triggerSuccessTracking: Boolean = true //internally trigger success tracking url by sdk
 
-        wifi = WifiSession.Builder(context = this)
+        val contextReference: Context = this@MainActivity
+
+        //Holds activity reference to call activity.startActivityForResult(Intent, Int) function when needed.
+        //Will clear reference when session canceled.
+        //This is required if contextReference is not activity reference.
+        val activityHelper: ActivityHelper = ActivityHelperDelegate(activity = this@MainActivity)
+
+        wifi = WifiSession.Builder(context = contextReference)
             .apiKey(apiKey)
             .userId(userId)
             .channelId(channelId)
             .projectId(projectId)
             .autoDeliverSuccessCallback(triggerSuccessTracking)
+            .activityHelper(activityHelper)
             .statusCallback(object : WifiSessionCallback {
                 override fun onStatusChanged(newStatus: WiFiSessionStatus) {
                     when(newStatus){

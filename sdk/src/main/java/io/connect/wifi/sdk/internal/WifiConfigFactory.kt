@@ -1,10 +1,13 @@
-package io.connect.wifi.sdk
+package io.connect.wifi.sdk.internal
 
 import android.os.Build
-import io.connect.wifi.sdk.Constants.Companion.TYPE_PASSPOINT_AOUCP
-import io.connect.wifi.sdk.Constants.Companion.TYPE_WPA2_ENTERPRISE_SUGGESTION
-import io.connect.wifi.sdk.Constants.Companion.TYPE_WPA2_SUGGESTION
-import io.connect.wifi.sdk.Constants.Companion.TYPE_WPA2_SUPPORT
+import io.connect.wifi.sdk.NetworkEncryption
+import io.connect.wifi.sdk.WifiRule
+import io.connect.wifi.sdk.internal.Constants.Companion.TYPE_PASSPOINT_AOUCP
+import io.connect.wifi.sdk.internal.Constants.Companion.TYPE_PASSPOINT_RESULT
+import io.connect.wifi.sdk.internal.Constants.Companion.TYPE_WPA2_ENTERPRISE_SUGGESTION
+import io.connect.wifi.sdk.internal.Constants.Companion.TYPE_WPA2_SUGGESTION
+import io.connect.wifi.sdk.internal.Constants.Companion.TYPE_WPA2_SUPPORT
 import io.connect.wifi.sdk.config.WifiConfig
 
 /**
@@ -67,7 +70,37 @@ internal class WifiConfigFactory {
                                     rule.friendlyName?.let { friendlyName ->
                                         rule.realm?.let { realm ->
                                             rule.caCertificate?.let { certificate ->
-                                                WifiConfig.PasspointConfiguration(
+                                                WifiConfig.PasspointAddOrUpdateConfiguration(
+                                                    password = password,
+                                                    fqdn = fqdn,
+                                                    username = username,
+                                                    eapType = eapType,
+                                                    nonEapInnerMethod = nonEapInnerMethod,
+                                                    friendlyName = friendlyName,
+                                                    realm = realm,
+                                                    caCertificate = certificate
+                                                ).also {
+                                                    cache[rule] = it
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            (rule.ruleName == TYPE_PASSPOINT_RESULT) -> {
+                rule.password?.let { password ->
+                    rule.fqdn?.let { fqdn ->
+                        rule.username?.let { username ->
+                            rule.eapType?.let { eapType ->
+                                rule.nonEapInnerMethod?.let { nonEapInnerMethod ->
+                                    rule.friendlyName?.let { friendlyName ->
+                                        rule.realm?.let { realm ->
+                                            rule.caCertificate?.let { certificate ->
+                                                WifiConfig.PasspointResultConfiguration(
                                                     password = password,
                                                     fqdn = fqdn,
                                                     username = username,
@@ -93,14 +126,18 @@ internal class WifiConfigFactory {
                     rule.ssid?.let { ssid ->
                         rule.identity?.let { identity ->
                             rule.caCertificate?.let { certificate ->
-                                WifiConfig.EnterpriseSuggestionConfiguration(
-                                    ssid = ssid,
-                                    password = password,
-                                    identity = identity,
-                                    caCertificate = certificate
-                                ).also {
-                                    cache[rule] = it
+                                rule.fqdn?.let { fqdn ->
+                                    WifiConfig.EnterpriseSuggestionConfiguration(
+                                        ssid = ssid,
+                                        password = password,
+                                        identity = identity,
+                                        caCertificate = certificate,
+                                        fqdn = fqdn
+                                    ).also {
+                                        cache[rule] = it
+                                    }
                                 }
+
                             }
                         }
                     }

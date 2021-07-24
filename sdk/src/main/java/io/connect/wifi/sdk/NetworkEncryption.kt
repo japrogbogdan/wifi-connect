@@ -1,5 +1,7 @@
 package io.connect.wifi.sdk
 
+import androidx.annotation.Keep
+
 /**
  * Types of encryption for wifi point
  *
@@ -13,6 +15,7 @@ sealed class NetworkEncryption {
      *
      * @see android.net.wifi.WifiConfiguration.AuthAlgorithm.SHARED
      */
+    @Keep
     object WEP : NetworkEncryption()
 
     /**
@@ -25,6 +28,7 @@ sealed class NetworkEncryption {
      * @see android.net.wifi.WifiConfiguration.Protocol.WPA
      * @see android.net.wifi.WifiConfiguration.Protocol.RSN
      */
+    @Keep
     object WPA2 : NetworkEncryption()
 
     /**
@@ -37,10 +41,12 @@ sealed class NetworkEncryption {
      * @see android.net.wifi.WifiConfiguration.Protocol.RSN
      * @see android.net.wifi.WifiEnterpriseConfig
      */
+    @Keep
     object WPA2EAP : NetworkEncryption()
 
     /**
      * @suppress Unused option
      */
+    @Keep
     object NO_PASSWORD : NetworkEncryption()
 }

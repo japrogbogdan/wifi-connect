@@ -1,8 +1,8 @@
 package io.connect.wifi.sdk.connect
 
 import io.connect.wifi.sdk.ConnectStatus
-import io.connect.wifi.sdk.LogUtils
-import io.connect.wifi.sdk.WifiConfigFactory
+import io.connect.wifi.sdk.internal.LogUtils
+import io.connect.wifi.sdk.internal.WifiConfigFactory
 import io.connect.wifi.sdk.WifiRule
 import java.lang.Exception
 

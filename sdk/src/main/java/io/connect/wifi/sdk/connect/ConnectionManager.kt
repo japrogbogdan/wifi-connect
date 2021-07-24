@@ -3,7 +3,7 @@ package io.connect.wifi.sdk.connect
 import android.content.Intent
 import android.net.wifi.WifiManager
 import io.connect.wifi.sdk.ConnectStatus
-import io.connect.wifi.sdk.LogUtils
+import io.connect.wifi.sdk.internal.LogUtils
 import io.connect.wifi.sdk.cerificate.CertificateFactory
 import io.connect.wifi.sdk.config.WifiConfig
 import java.lang.Exception

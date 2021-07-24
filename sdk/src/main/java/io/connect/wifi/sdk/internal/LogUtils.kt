@@ -1,6 +1,7 @@
-package io.connect.wifi.sdk
+package io.connect.wifi.sdk.internal
 
 import android.util.Log
+import io.connect.wifi.sdk.BuildConfig
 
 internal object LogUtils {
 

@@ -87,13 +87,25 @@ internal class DelegateFactory(
                     }
                 else null
             }
-            is WifiConfig.PasspointConfiguration -> {
+            is WifiConfig.PasspointAddOrUpdateConfiguration -> {
                 if (Build.VERSION.SDK_INT >= 26)
-                    PasspointDelegate(
+                    PasspointAddOrUpdateDelegate(
                         wifiManager,
                         config,
                         certificateFactory,
                         status
+                    ).also {
+                        cache[config] = it
+                    }
+                else null
+            }
+            is WifiConfig.PasspointResultConfiguration -> {
+                if (Build.VERSION.SDK_INT >= 30)
+                    PasspointResultDelegate(
+                        config,
+                        certificateFactory,
+                        status,
+                        startActivityForResult
                     ).also {
                         cache[config] = it
                     }

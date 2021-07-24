@@ -1,6 +1,6 @@
 package io.connect.wifi.sdk.network
 
-import io.connect.wifi.sdk.LogUtils
+import io.connect.wifi.sdk.internal.LogUtils
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader

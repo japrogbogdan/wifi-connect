@@ -1,7 +1,7 @@
 package io.connect.wifi.sdk.task
 
 import android.os.Handler
-import io.connect.wifi.sdk.LogUtils
+import io.connect.wifi.sdk.internal.LogUtils
 import io.connect.wifi.sdk.util.execute
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService

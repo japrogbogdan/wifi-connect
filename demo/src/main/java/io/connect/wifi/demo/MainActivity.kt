@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             //удаляем сессию, если уже есть такая
             cleanSession()
 
-            wifi = WifiSession.Builder(this)
+            wifi = WifiSession.Builder(context = this)
                 .apiKey(binding.inputToken.getText())
                 .userId(binding.inputUserId.getText())
                 .channelId(channel)

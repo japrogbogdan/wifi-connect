@@ -1,6 +1,9 @@
 package io.connect.wifi.sdk
 
 import android.content.Context
+import io.connect.wifi.sdk.activity.ActivityHelper
+import io.connect.wifi.sdk.internal.Controller
+import io.connect.wifi.sdk.internal.LogUtils
 import java.lang.ref.SoftReference
 
 /**
@@ -11,7 +14,13 @@ import java.lang.ref.SoftReference
  *
  * @since 1.0.1
  */
-class WifiConnectionCommander(private val activity: Context) {
+class WifiConnectionCommander(
+    private val activity: Context,
+    /**
+     * Helper class to call activity.startActivityForResult when Context is not enough
+     */
+    private val activityHelper: ActivityHelper? = null
+) {
 
     private var controller: SoftReference<Controller?>? = null
 
@@ -29,7 +38,7 @@ class WifiConnectionCommander(private val activity: Context) {
 
     private fun makeSureWeHaveController() {
         if (controller == null) {
-            val reference = Controller()
+            val reference = Controller(activityHelper)
             controller = SoftReference(reference)
         }
     }
@@ -48,6 +57,7 @@ class WifiConnectionCommander(private val activity: Context) {
      * Drop connection attempt
      */
     fun closeConnection() {
+        activityHelper?.cleanup()
         controller?.get()?.resetConnection()
         controller = null
     }

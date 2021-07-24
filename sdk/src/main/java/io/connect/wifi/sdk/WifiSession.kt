@@ -1,7 +1,10 @@
 package io.connect.wifi.sdk
 
 import android.content.Context
+import androidx.annotation.Keep
+import io.connect.wifi.sdk.activity.ActivityHelper
 import io.connect.wifi.sdk.data.SessionData
+import io.connect.wifi.sdk.internal.LogUtils
 import io.connect.wifi.sdk.session.SessionExecutor
 import io.connect.wifi.sdk.util.DeviceDump
 import java.lang.Exception
@@ -37,7 +40,11 @@ class WifiSession private constructor(
     /**
      * callback for status changes
      */
-    val callback: WifiSessionCallback?
+    val callback: WifiSessionCallback?,
+    /**
+     * Holder of activity reference. Used when context is no instance of activity
+     */
+    val activityHelper: ActivityHelper?
 ) {
 
     private var session: SessionExecutor? = null
@@ -49,7 +56,14 @@ class WifiSession private constructor(
         val data = SessionData(apiKey, channelId, projectId, userId, null)
         val dump = DeviceDump(context).getDataDump()
         LogUtils.debug("[WifiSession] Start session:\ndata:$data\ndump:$dump")
-        session = SessionExecutor(context, data, dump, callback, autoDeliverSuccessCallback)
+        session = SessionExecutor(
+            context,
+            data,
+            dump,
+            callback,
+            activityHelper,
+            autoDeliverSuccessCallback
+        )
         session?.start()
     }
 
@@ -63,7 +77,7 @@ class WifiSession private constructor(
         session?.cancel()
         session = null
     }
-
+    @Keep
     data class Builder(
         /**
          * Context of current entry point of the app
@@ -92,7 +106,11 @@ class WifiSession private constructor(
         /**
          * callback for status changes
          */
-        var callback: WifiSessionCallback? = null
+        var callback: WifiSessionCallback? = null,
+        /**
+         * Holder of activity reference. Used when context is no instance of activity
+         */
+        var activityHelper: ActivityHelper? = null
     ) {
 
         /**
@@ -118,7 +136,8 @@ class WifiSession private constructor(
         /**
          * Enable/disable internal delivery of success callbacks
          */
-        fun autoDeliverSuccessCallback(autoDeliverSuccessCallback: Boolean) = apply { this.autoDeliverSuccessCallback = autoDeliverSuccessCallback }
+        fun autoDeliverSuccessCallback(autoDeliverSuccessCallback: Boolean) =
+            apply { this.autoDeliverSuccessCallback = autoDeliverSuccessCallback }
 
         /**
          * callback for status changes
@@ -126,16 +145,32 @@ class WifiSession private constructor(
         fun statusCallback(callback: WifiSessionCallback) = apply { this.callback = callback }
 
         /**
+         * callback for status changes
+         */
+        fun activityHelper(activityHelper: ActivityHelper) =
+            apply { this.activityHelper = activityHelper }
+
+        /**
          * create new WifiSession instance with provided earlier data
          */
         fun create() =
-            WifiSession(context, apiKey.orEmpty(), userId.orEmpty(), channelId, projectId, autoDeliverSuccessCallback, callback)
+            WifiSession(
+                context,
+                apiKey.orEmpty(),
+                userId.orEmpty(),
+                channelId,
+                projectId,
+                autoDeliverSuccessCallback,
+                callback,
+                activityHelper
+            )
     }
 }
 
 /**
  * Listener for session status changes
  */
+@Keep
 interface WifiSessionCallback {
 
     /**
@@ -152,6 +187,7 @@ sealed class WiFiSessionStatus {
     /**
      * Requesting remote rules for current user & it's device
      */
+    @Keep
     object RequestConfigs : WiFiSessionStatus() {
         override fun toString() = "RequestConfigs"
     }
@@ -159,6 +195,7 @@ sealed class WiFiSessionStatus {
     /**
      * We fetched wifi rules & now in the process of connecting to wifi
      */
+    @Keep
     object Connecting : WiFiSessionStatus() {
         override fun toString() = "Connecting"
     }
@@ -166,6 +203,7 @@ sealed class WiFiSessionStatus {
     /**
      * We had sent the wifi connection request to device's OS & had received positive response.
      */
+    @Keep
     object Success : WiFiSessionStatus() {
         override fun toString() = "Success"
     }
@@ -173,11 +211,13 @@ sealed class WiFiSessionStatus {
     /**
      * There's an failure. See reason for explanation.
      */
+    @Keep
     data class Error(val reason: Exception) : WiFiSessionStatus()
 
     /**
      * Current session had been canceled by user request.
      */
+    @Keep
     object CancelSession : WiFiSessionStatus() {
         override fun toString() = "CancelSession"
     }

@@ -9,7 +9,7 @@ package io.connect.wifi.sdk.config
  */
 internal sealed class WifiConfig(open val ssid: String? = null) {
 
-    data class PasspointConfiguration(
+    data class PasspointAddOrUpdateConfiguration(
         val password: String,
         val fqdn: String,
         val username: String,
@@ -20,7 +20,22 @@ internal sealed class WifiConfig(open val ssid: String? = null) {
         val caCertificate: String
     ) : WifiConfig() {
         override fun toString(): String {
-            return "PasspointConfiguration(password='$password', fqdn='$fqdn', username='$username', eapType='$eapType', nonEapInnerMethod='$nonEapInnerMethod', friendlyName='$friendlyName', realm='$realm', caCertificate='$caCertificate')"
+            return "PasspointAddOrUpdateConfiguration(password='$password', fqdn='$fqdn', username='$username', eapType='$eapType', nonEapInnerMethod='$nonEapInnerMethod', friendlyName='$friendlyName', realm='$realm', caCertificate='$caCertificate')"
+        }
+    }
+
+    data class PasspointResultConfiguration(
+        val password: String,
+        val fqdn: String,
+        val username: String,
+        val eapType: String,
+        val nonEapInnerMethod: String,
+        val friendlyName: String,
+        val realm: String,
+        val caCertificate: String
+    ) : WifiConfig() {
+        override fun toString(): String {
+            return "PasspointResultConfiguration(password='$password', fqdn='$fqdn', username='$username', eapType='$eapType', nonEapInnerMethod='$nonEapInnerMethod', friendlyName='$friendlyName', realm='$realm', caCertificate='$caCertificate')"
         }
     }
 
@@ -28,10 +43,11 @@ internal sealed class WifiConfig(open val ssid: String? = null) {
         override val ssid: String,
         val password: String,
         val identity: String,
-        val caCertificate: String
+        val caCertificate: String,
+        val fqdn: String
     ) : WifiConfig(ssid) {
         override fun toString(): String {
-            return "EnterpriseSuggestionConfiguration(ssid='$ssid', password='$password', identity='$identity', caCertificate='$caCertificate')"
+            return "EnterpriseSuggestionConfiguration(ssid='$ssid', password='$password', identity='$identity', caCertificate='$caCertificate', fqdn='$fqdn')"
         }
     }
 

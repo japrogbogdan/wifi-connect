@@ -28,7 +28,9 @@ internal class EnterpriseSuggestionDelegate(
     }
 
     override fun prepareDelegate() {
-
+        if (Build.VERSION.SDK_INT >= 30) {
+            configuration.domainSuffixMatch = rule.fqdn
+        }
     }
 
     override fun connect() {

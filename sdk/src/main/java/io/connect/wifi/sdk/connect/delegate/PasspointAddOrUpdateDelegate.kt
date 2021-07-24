@@ -13,9 +13,9 @@ import io.connect.wifi.sdk.config.WifiConfig
 import java.lang.Exception
 
 @RequiresApi(Build.VERSION_CODES.O)
-internal class PasspointDelegate(
+internal class PasspointAddOrUpdateDelegate(
     private val wifiManager: WifiManager,
-    private val rule: WifiConfig.PasspointConfiguration,
+    private val rule: WifiConfig.PasspointAddOrUpdateConfiguration,
     private val certificateFactory: CertificateFactory,
     private val status: (ConnectStatus) -> Unit
 ) : ConnectionDelegate {
@@ -58,7 +58,7 @@ internal class PasspointDelegate(
     }
 
     override fun toString(): String {
-        return "PasspointDelegate(rule=$rule)"
+        return "PasspointAddOrUpdateDelegate(rule=$rule)"
     }
 
 

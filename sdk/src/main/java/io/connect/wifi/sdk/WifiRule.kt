@@ -1,5 +1,7 @@
 package io.connect.wifi.sdk
 
+import androidx.annotation.Keep
+
 /**
  * Rule that we use to connect to wifi
  * @see io.connect.wifi.sdk.WifiRule.Builder to create new rule
@@ -63,6 +65,7 @@ class WifiRule private constructor(
      * Default WifiRule builder. This is the only option to create new rule.
      * @see io.connect.wifi.sdk.WifiRule
      */
+    @Keep
     data class Builder(
 
         var ruleName: String? = null,

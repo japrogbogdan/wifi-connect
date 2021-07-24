@@ -1,7 +1,7 @@
 package io.connect.wifi.sdk.task
 
 import android.os.Handler
-import io.connect.wifi.sdk.LogUtils
+import io.connect.wifi.sdk.internal.LogUtils
 import io.connect.wifi.sdk.analytics.ConnectResult
 import io.connect.wifi.sdk.analytics.ConnectionResultAnalyticsCommand
 import io.connect.wifi.sdk.data.DeviceData

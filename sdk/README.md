@@ -1,6 +1,6 @@
 # Android Wifi Connect SDK
 
-## Steps to build sdk as standalone aar file:
+## Steps to build sdk as standalone aar file without encryption and with source code included:
 
 Step 1: Use commandline and run:
 
@@ -8,7 +8,18 @@ Step 1: Use commandline and run:
 ./gradlew sdk:addMySourcesToAar
 ```
 
-Step 2: Copy/paste sdk file from sdk/build/sdk-release.aar to your directory
+Step 2: Copy/paste sdk file from sdk/build/sdk-debug-{SDK_VERSION}.aar to your directory
+
+
+## Steps to build sdk as standalone aar file:
+
+Step 1: Use commandline and run:
+
+```
+./gradlew sdk:buildEncryptedSdk
+```
+
+Step 2: Copy/paste sdk file from sdk/build/sdk-release-{SDK_VERSION}.aar to your directory
 
 ## License
 

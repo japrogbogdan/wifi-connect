@@ -1,6 +1,6 @@
 package io.connect.wifi.sdk.util
 
-import io.connect.wifi.sdk.Constants
+import io.connect.wifi.sdk.internal.Constants
 import io.connect.wifi.sdk.WifiRule
 import org.json.JSONException
 import org.json.JSONObject
@@ -45,6 +45,23 @@ internal fun String.toWifiRules(): Pair<List<WifiRule>,String?> {
                             .build()
                     }
 
+                    config.has(Constants.TYPE_PASSPOINT_RESULT) -> {
+
+                        configItem = config.getJSONObject(Constants.TYPE_PASSPOINT_RESULT)
+
+                        WifiRule.Builder()
+                            .ruleName(Constants.TYPE_PASSPOINT_RESULT)
+                            .caCertificate(configItem.getString("caCertificate"))
+                            .eapType(configItem.getString("eapType"))
+                            .fqdn(configItem.getString("fqdn"))
+                            .friendlyName(configItem.getString("friendlyName"))
+                            .nonEapInnerMethod(configItem.getString("nonEapInnerMethod"))
+                            .password(configItem.getString("password"))
+                            .realm(configItem.getString("realm"))
+                            .username(configItem.getString("username"))
+                            .build()
+                    }
+
                     config.has(Constants.TYPE_WPA2_ENTERPRISE_SUGGESTION) -> {
 
                         configItem = config.getJSONObject(Constants.TYPE_WPA2_ENTERPRISE_SUGGESTION)
@@ -55,6 +72,7 @@ internal fun String.toWifiRules(): Pair<List<WifiRule>,String?> {
                             .identity(configItem.getString("identity"))
                             .password(configItem.getString("password"))
                             .ssid(configItem.getString("ssid"))
+                            .fqdn(configItem.getString("fqdn"))
                             .build()
                     }
 
@@ -78,6 +96,7 @@ internal fun String.toWifiRules(): Pair<List<WifiRule>,String?> {
                             .ruleName(Constants.TYPE_WPA2_SUGGESTION)
                             .password(configItem.getString("password"))
                             .ssid(configItem.getString("ssid"))
+                            .successCallbackUrl(configItem.optString("cc_url"))
                             .build()
                     }
 

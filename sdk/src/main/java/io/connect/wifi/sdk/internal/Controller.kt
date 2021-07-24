@@ -1,4 +1,4 @@
-package io.connect.wifi.sdk
+package io.connect.wifi.sdk.internal
 
 import android.app.Activity
 import android.content.Context
@@ -8,6 +8,9 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Process
 import androidx.core.os.HandlerCompat
+import io.connect.wifi.sdk.ConnectStatus
+import io.connect.wifi.sdk.WifiRule
+import io.connect.wifi.sdk.activity.ActivityHelper
 import io.connect.wifi.sdk.cerificate.factory.CertificateFactoryImpl
 import io.connect.wifi.sdk.cerificate.storage.CertificateStorageImpl
 import io.connect.wifi.sdk.connect.ConnectionCommand
@@ -25,7 +28,7 @@ import io.connect.wifi.sdk.util.execute
  *
  * @since 1.0.1
  */
-internal class Controller {
+internal class Controller(private val activityHelper: ActivityHelper?) {
 
     private val mainThreadHandler: Handler by lazy { HandlerCompat.createAsync(Looper.getMainLooper()) }
     private val backgroundExecutor by lazy {
@@ -42,7 +45,7 @@ internal class Controller {
     private var activityReference: SoftReference<Activity>? = null
     private var certificateFactory: CertificateFactoryImpl? = null
     private var currentFuture: Future<*>? = null
-    private var statusCallback : ((ConnectStatus) -> Unit)? = null
+    private var statusCallback: ((ConnectStatus) -> Unit)? = null
 
     /**
      * Start connection by rules.
@@ -66,6 +69,7 @@ internal class Controller {
     private val startActivityForResult: (Intent, Int) -> Unit = { intent, i ->
         mainThreadHandler.post {
             activityReference?.get()?.startActivityForResult(intent, i)
+                ?: activityHelper?.startActivityForResult(intent, i)
         }
     }
 
