@@ -28,7 +28,7 @@ internal class SendSuccessConnectionTask(
 
     override fun name() = "SendSuccessConnectionTask"
 
-    override fun maxRepeatCount() = 3
+    override fun maxRepeatCount() = 12
 
     override fun getAndIncrement() = retryCount.getAndIncrement()
 
