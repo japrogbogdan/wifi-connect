@@ -7,6 +7,7 @@ import java.io.InputStreamReader
 import java.io.OutputStream
 import java.lang.Exception
 import java.lang.StringBuilder
+import java.net.HttpURLConnection
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
@@ -17,13 +18,18 @@ internal abstract class BaseGetNetworkCommand : NetworkCommand {
     internal abstract fun getApiKey(): String
 
     override fun sendRequest(body: String?): String? {
-        var connection: HttpsURLConnection? = null
+        var connection: HttpURLConnection? = null
         var output: OutputStream? = null
         var inputStream: InputStream? = null
         try {
-            val url = URL(getUrlLink())
+            val link = getUrlLink()
+            val url = URL(link)
             LogUtils.debug("[BaseGetNetworkCommand] Begin request:\nurl: $url")
-            connection = url.openConnection() as HttpsURLConnection
+
+            connection = if (link.startsWith("https"))
+                url.openConnection() as HttpsURLConnection
+            else url.openConnection() as HttpURLConnection
+
             connection.apply {
                 requestMethod = "GET"
                 setRequestProperty("x-api-key", getApiKey())
