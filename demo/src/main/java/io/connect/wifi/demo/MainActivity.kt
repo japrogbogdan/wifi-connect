@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     private val cache: LocalCache by lazy { LocalCache(this) }
 
     private val API_KEY =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJwaWQiOiI0Iiwic3ViIjoiMThhZTAwN2QtODIzYS00NDZjLTkwMzktYTg1YjQ1ZDg0MDNmIiwiaWF0IjoxNjI5OTA4MzY5LCJzY29wZXMiOlsicmVnaXN0cmF0aW9uIiwicmVnaXN0cmF0aW9uX2dldF93aWZpX3NldHRpbmdzIl19.SspnNcCFslfCI1D0QTxr3ac6xkNNGdAdPpaMPjquD75LUAXEOdzHBHCj8mbM2SSa"
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJwaWQiOiIxIiwic3ViIjoiZGM4ZDI4NGUtOWU3Mi00NmExLTk5YTctNDRhZmM2NjAzZjk5IiwiaWF0IjoxNjIxODc4MjY3LCJzY29wZXMiOlsicmVnaXN0cmF0aW9uX2dldF93aWZpX3NldHRpbmdzIl19.yfWqqg_zg_TjH0tyIWkU_8agcSSemCDOYBA4bqApOhi8Ygji5lC5Yf3-tU2kt-zT"
 
     private var wifi: WifiSession? = null
 
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             setHint("user id")
 
             var id = cache.userId
-            if (id.isEmpty()) id = "25733d6b-90cb-4abd-b593-128c3bd0c183" //"pntr54355430-dfbdb43-43t34mmljbdf"
+            if (id.isEmpty()) id = "pntr54355430-dfbdb43-43t34mmljbdf"
             setText(id)
         }
         binding.inputApiDomain.apply {
