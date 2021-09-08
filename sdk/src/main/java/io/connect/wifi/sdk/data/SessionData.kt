@@ -11,6 +11,7 @@ import org.json.JSONObject
  */
 internal data class SessionData(
     val apiKey: String,
+    val apiDomain: String,
     val channelId: Int,
     val projectId: Int,
     val userId: String,

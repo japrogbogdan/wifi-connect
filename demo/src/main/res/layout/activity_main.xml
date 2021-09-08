@@ -40,12 +40,20 @@
                 app:layout_constraintTop_toBottomOf="@id/input_token" />
 
             <ui.helper.InputView
-                android:id="@+id/input_channelId"
+                android:id="@+id/input_apiDomain"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/input_userId" />
+
+            <ui.helper.InputView
+                android:id="@+id/input_channelId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/input_apiDomain" />
 
             <ui.helper.InputView
                 android:id="@+id/input_projectId"

@@ -26,6 +26,10 @@ class WifiSession private constructor(
      */
     val userId: String,
     /**
+     * identifier for domain name server of the API SmartWiFi
+     */
+    var apiDomain: String,
+    /**
      * identifier of the channel
      */
     val channelId: Int,
@@ -53,7 +57,7 @@ class WifiSession private constructor(
      * Begin connection session for current device dump & user settings (apiKey, userId, channelId, projectId)
      */
     fun startSession() {
-        val data = SessionData(apiKey, channelId, projectId, userId, null)
+        val data = SessionData(apiKey, apiDomain, channelId, projectId, userId, null)
         val dump = DeviceDump(context).getDataDump()
         LogUtils.debug("[WifiSession] Start session:\ndata:$data\ndump:$dump")
         session = SessionExecutor(
@@ -92,6 +96,10 @@ class WifiSession private constructor(
          */
         var userId: String? = null,
         /**
+         * identifier for domain name server of the API SmartWiFi
+         */
+        var apiDomain: String = "",
+        /**
          * identifier of the channel
          */
         var channelId: Int = 0,
@@ -122,6 +130,11 @@ class WifiSession private constructor(
          * unique identifier of current user (app install)
          */
         fun userId(userId: String) = apply { this.userId = userId }
+
+        /**
+         * identifier for domain name server of the API SmartWiFi
+         */
+        fun apiDomain(apiDomain: String) = apply { this.apiDomain = apiDomain }
 
         /**
          * identifier of the channel
@@ -158,6 +171,7 @@ class WifiSession private constructor(
                 context,
                 apiKey.orEmpty(),
                 userId.orEmpty(),
+                apiDomain,
                 channelId,
                 projectId,
                 autoDeliverSuccessCallback,

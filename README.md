@@ -57,6 +57,7 @@ private var wifi: WifiSession? = null
     private fun createSession(){
         val apiKey: String = "YOUR_API_KEY"
         val userId: String = "USER_ID"
+        val apiDomain: String = "API_DOMAIN" //identifier for domain name server of the API SmartWiFi
         val channelId: Int = 1 //your channel id
         val projectId: Int = 1 //your project id
         val triggerSuccessTracking: Boolean = true //internally trigger success tracking url by sdk
@@ -71,6 +72,7 @@ private var wifi: WifiSession? = null
         wifi = WifiSession.Builder(context = contextReference)
             .apiKey(apiKey)
             .userId(userId)
+            .apiDomain(apiDomain)
             .channelId(channelId)
             .projectId(projectId)
             .autoDeliverSuccessCallback(triggerSuccessTracking)

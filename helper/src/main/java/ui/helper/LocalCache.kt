@@ -11,6 +11,7 @@ class LocalCache(context: Context) {
         private const val KEY_PASS = "user_pass"
         private const val KEY_SSID = "key_ssid"
         private const val KEY_API_TOKEN = "KEY_API_TOKEN"
+        private const val KEY_API_DOMAIN = "KEY_API_DOMAIN"
         private const val KEY_USER_ID = "KEY_USER_ID"
         private const val KEY_CHANNEL_ID = "KEY_CHANNEL_ID"
         private const val KEY_PROJECT_ID = "KEY_PROJECT_ID"
@@ -48,6 +49,14 @@ class LocalCache(context: Context) {
         }
         get() {
             return preferences.getString(KEY_USER_ID, "") ?: ""
+        }
+
+    var apiDomain: String
+        set(value) {
+            preferences.edit().putString(KEY_API_DOMAIN, value).apply()
+        }
+        get() {
+            return preferences.getString(KEY_API_DOMAIN, "") ?: ""
         }
 
     var channelId: String
