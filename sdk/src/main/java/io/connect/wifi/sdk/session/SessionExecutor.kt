@@ -14,12 +14,14 @@ import io.connect.wifi.sdk.internal.LogUtils
 import io.connect.wifi.sdk.network.RequestConfigCommand
 import io.connect.wifi.sdk.task.SendAnalyticsTask
 import io.connect.wifi.sdk.task.SendSuccessConnectionTask
+import io.connect.wifi.sdk.util.LocalCache
 import io.connect.wifi.sdk.util.execute
 import io.connect.wifi.sdk.util.toWifiRules
 import java.lang.Exception
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import kotlin.collections.ArrayList
 
 /**
  * @suppress Internal api
@@ -45,6 +47,7 @@ internal class SessionExecutor(
     }
 
     private var currentFuture: Future<*>? = null
+    private val cache: LocalCache by lazy { LocalCache(context) }
 
     /**
      * Temporary cache for rules that we may use for connecting to wifi.
@@ -56,7 +59,12 @@ internal class SessionExecutor(
     /**
      * Commander to do connection request by rules
      */
-    private val commander: WifiConnectionCommander by lazy { WifiConnectionCommander(context, activityHelper) }
+    private val commander: WifiConnectionCommander by lazy {
+        WifiConnectionCommander(
+            context,
+            activityHelper
+        )
+    }
 
     /**
      * Analytics cache for connection attempt
@@ -85,12 +93,31 @@ internal class SessionExecutor(
             resultHandler = mainThreadHandler,
             success = {
                 LogUtils.debug("[SessionExecutor] Received ${it.first.size} remote configs")
-                queue.addAll(it.first)
-                sessionData.traceId = it.second
+
+                if (it.first.isNullOrEmpty())
+                    queue.addAll(cache.listWiFiRule ?: arrayListOf())
+                else {
+                    queue.addAll(it.first)
+                    (it.first as? ArrayList<WifiRule>)?.let {
+                        cache.listWiFiRule = it
+                    }
+                }
+
+                if (it.second.isNullOrEmpty())
+                    sessionData.traceId = cache.traceId.orEmpty()
+                else {
+                    sessionData.traceId = it.second
+                    cache.traceId = it.second
+                }
             },
             error = {
                 LogUtils.debug("[SessionExecutor] Request configs error", it)
                 notifyStatusChanged(WiFiSessionStatus.Error(Exception(it)))
+                cache.listWiFiRule?.let { cacheListRule ->
+                    queue.addAll(cacheListRule)
+                    sessionData.traceId = cache.traceId.orEmpty()
+                    startIteration()
+                }
             },
             complete = {
                 LogUtils.debug("[SessionExecutor] Request remote finished")
@@ -173,14 +200,14 @@ internal class SessionExecutor(
             dump,
             connectionResult
         )
-        mainThreadHandler.post (retryAnalytics!!)
+        mainThreadHandler.post(retryAnalytics!!)
     }
 
     private fun triggerSuccessCallbackUrl(url: String) {
-        if (autoDeliverSuccessCallback){
+        if (autoDeliverSuccessCallback) {
             successCallback =
                 SendSuccessConnectionTask(mainThreadHandler, backgroundExecutor, sessionData, url)
-            mainThreadHandler.post (successCallback!!)
+            mainThreadHandler.post(successCallback!!)
         }
     }
 

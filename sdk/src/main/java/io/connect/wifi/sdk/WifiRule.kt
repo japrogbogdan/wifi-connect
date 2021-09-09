@@ -1,6 +1,7 @@
 package io.connect.wifi.sdk
 
 import androidx.annotation.Keep
+import kotlinx.serialization.Serializable
 
 /**
  * Rule that we use to connect to wifi
@@ -8,58 +9,59 @@ import androidx.annotation.Keep
  *
  * @since 1.0.1
  */
-class WifiRule private constructor(
+@Serializable
+class WifiRule constructor(
 
-    val ruleName: String?,
+    val ruleName: String? = null,
 
     /**
      * @see io.connect.wifi.sdk.WifiRule.Builder.ssid
      */
-    val ssid: String?,
+    val ssid: String? = null,
 
     /**
      * @see io.connect.wifi.sdk.WifiRule.Builder.password
      */
-    val password: String?,
+    val password: String? = null,
 
     /**
      * @see io.connect.wifi.sdk.WifiRule.Builder.networkEncryption
      */
-    val networkEncryption: NetworkEncryption?,
+    val networkEncryption: NetworkEncryption = NetworkEncryption.WPA2,
 
     /**
      * @see io.connect.wifi.sdk.WifiRule.Builder.hidden
      */
-    val hidden: Boolean,
+    val hidden: Boolean = false,
 
     /**
      * @see io.connect.wifi.sdk.WifiRule.Builder.identity
      */
-    val identity: String?,
+    val identity: String? = null,
 
     /**
      * @see io.connect.wifi.sdk.WifiRule.Builder.anonymousIdentity
      */
-    val anonymousIdentity: String?,
+    val anonymousIdentity: String? = null,
 
     /**
      * @see io.connect.wifi.sdk.WifiRule.Builder.eapMethod
      */
-    val eapMethod: EapMethod?,
+    val eapMethod: EapMethod? = null,
 
     /**
      * @see io.connect.wifi.sdk.WifiRule.Builder.phase2Method
      */
-    val phase2Method: Phase2Method?,
+    val phase2Method: Phase2Method? = null,
 
-    val fqdn: String?,
-    val username: String?,
-    val nonEapInnerMethod: String?,
-    val eapType: String?,
-    val friendlyName: String?,
-    val realm: String?,
-    val caCertificate: String?,
-    val successCallbackUrl: String?
+    var fqdn: String? = null,
+    var username: String? = null,
+    var nonEapInnerMethod: String? = null,
+    var eapType: String? = null,
+    var friendlyName: String? = null,
+    var realm: String? = null,
+    var caCertificate: String? = null,
+    var successCallbackUrl: String? = null
 ) {
     /**
      * Default WifiRule builder. This is the only option to create new rule.

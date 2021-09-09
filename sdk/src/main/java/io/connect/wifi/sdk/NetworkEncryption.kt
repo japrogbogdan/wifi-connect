@@ -1,12 +1,15 @@
 package io.connect.wifi.sdk
 
 import androidx.annotation.Keep
+import kotlinx.serialization.Serializable
+
 
 /**
  * Types of encryption for wifi point
  *
  * @since 1.0.1
  */
+@Serializable
 sealed class NetworkEncryption {
     /**
      * @suppress Not Recommended option.

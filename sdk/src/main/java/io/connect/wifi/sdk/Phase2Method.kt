@@ -1,6 +1,7 @@
 package io.connect.wifi.sdk
 
 import androidx.annotation.Keep
+import kotlinx.serialization.Serializable
 
 /**
  * Wrapper above [android.net.wifi.WifiEnterpriseConfig.Eap]
@@ -8,6 +9,7 @@ import androidx.annotation.Keep
  *
  * @since 1.0.1
  */
+@Serializable
 sealed class Phase2Method(val id: Int) {
     /**
      * @see android.net.wifi.WifiEnterpriseConfig.Phase2.NONE
