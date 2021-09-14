@@ -77,6 +77,17 @@ internal class DelegateFactory(
                     }
                 else null
             }
+            is WifiConfig.Wpa2Api30 -> {
+                if (Build.VERSION.SDK_INT >= 30)
+                    Wpa2Api30Delegate(
+                        wifiManager,
+                        config,
+                        status
+                    ).also {
+                        cache[config] = it
+                    }
+                else null
+            }
             is WifiConfig.SuggestionNetworkList -> {
                 if (Build.VERSION.SDK_INT >= 29)
                     SuggestionListDelegate(

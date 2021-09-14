@@ -100,6 +100,18 @@ internal fun String.toWifiRules(): Pair<List<WifiRule>,String?> {
                             .build()
                     }
 
+                    config.has(Constants.TYPE_WPA2_API30) -> {
+
+                        configItem = config.getJSONObject(Constants.TYPE_WPA2_API30)
+
+                        WifiRule.Builder()
+                            .ruleName(Constants.TYPE_WPA2_API30)
+                            .password(configItem.getString("password"))
+                            .ssid(configItem.getString("ssid"))
+                            .successCallbackUrl(configItem.optString("cc_url"))
+                            .build()
+                    }
+
                     else -> null
                 }
             } catch (e: JSONException) {

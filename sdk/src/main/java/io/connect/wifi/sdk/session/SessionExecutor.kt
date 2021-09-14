@@ -10,6 +10,7 @@ import io.connect.wifi.sdk.activity.ActivityHelper
 import io.connect.wifi.sdk.analytics.ConnectResult
 import io.connect.wifi.sdk.data.DeviceData
 import io.connect.wifi.sdk.data.SessionData
+import io.connect.wifi.sdk.internal.Constants.Companion.TYPE_WPA2_API30
 import io.connect.wifi.sdk.internal.LogUtils
 import io.connect.wifi.sdk.network.RequestConfigCommand
 import io.connect.wifi.sdk.task.SendAnalyticsTask

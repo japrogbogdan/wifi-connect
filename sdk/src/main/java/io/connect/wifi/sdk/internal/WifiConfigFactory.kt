@@ -9,6 +9,7 @@ import io.connect.wifi.sdk.internal.Constants.Companion.TYPE_WPA2_ENTERPRISE_SUG
 import io.connect.wifi.sdk.internal.Constants.Companion.TYPE_WPA2_SUGGESTION
 import io.connect.wifi.sdk.internal.Constants.Companion.TYPE_WPA2_SUPPORT
 import io.connect.wifi.sdk.config.WifiConfig
+import io.connect.wifi.sdk.internal.Constants.Companion.TYPE_WPA2_API30
 
 /**
  * @suppress Internal api
@@ -56,6 +57,15 @@ internal class WifiConfigFactory {
                 rule.ssid?.let { id ->
                     rule.password?.let { pass ->
                         WifiConfig.Wpa2PassphraseSuggestion(id, pass).also {
+                            cache[rule] = it
+                        }
+                    }
+                }
+            }
+            (rule.ruleName == TYPE_WPA2_API30) -> {
+                rule.ssid?.let { id ->
+                    rule.password?.let { pass ->
+                        WifiConfig.Wpa2Api30(id, pass).also {
                             cache[rule] = it
                         }
                     }

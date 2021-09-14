@@ -51,6 +51,13 @@ internal sealed class WifiConfig(open val ssid: String? = null) {
         }
     }
 
+    data class Wpa2Api30(override val ssid: String, val password: String) :
+        WifiConfig(ssid) {
+        override fun toString(): String {
+            return "Wpa2Api30(ssid='$ssid', password='$password')"
+        }
+    }
+
     /**
      * We use this configuration for android 29 version.
      */
