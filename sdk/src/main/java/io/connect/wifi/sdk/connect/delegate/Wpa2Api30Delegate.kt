@@ -1,8 +1,11 @@
 package io.connect.wifi.sdk.connect.delegate
 
+import android.content.Intent
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSuggestion
 import android.os.Build
+import android.os.Bundle
+import android.provider.Settings
 import androidx.annotation.RequiresApi
 import io.connect.wifi.sdk.ConnectStatus
 import io.connect.wifi.sdk.config.WifiConfig
@@ -18,13 +21,13 @@ import io.connect.wifi.sdk.config.WifiConfig
  */
 @RequiresApi(Build.VERSION_CODES.Q)
 internal class Wpa2Api30Delegate(
-    private val wifiManager: WifiManager,
     private val rule: WifiConfig.Wpa2Api30,
-    private val status: (ConnectStatus) -> Unit
+    private val status: (ConnectStatus) -> Unit,
+    private val startActivityForResult: (Intent, Int) -> Unit
 ) : ConnectionDelegate {
 
     private val suggestion = WifiNetworkSuggestion.Builder().apply {
-        setPriority(500)
+        setPriority(Int.MAX_VALUE) //500
         setSsid(rule.ssid)
         setWpa2Passphrase(rule.password)
     }
@@ -43,40 +46,14 @@ internal class Wpa2Api30Delegate(
      */
     override fun connect() {
         status.invoke(ConnectStatus.Processing)
-
-        wifiManager.removeNetworkSuggestions(suggestions)
-
-        val status = wifiManager.addNetworkSuggestions(suggestions)
-        readStatus(status)
-    }
-
-    private fun readStatus(statusCode: Int) {
-        when (statusCode) {
-            WifiManager.STATUS_NETWORK_SUGGESTIONS_ERROR_ADD_DUPLICATE -> {
-                status.invoke(ConnectStatus.Error(Exception("NETWORK_SUGGESTIONS_ERROR_ADD_DUPLICATE")))
-            }
-            WifiManager.STATUS_NETWORK_SUGGESTIONS_ERROR_ADD_EXCEEDS_MAX_PER_APP -> {
-                status.invoke(ConnectStatus.Error(Exception("NETWORK_SUGGESTIONS_ERROR_ADD_EXCEEDS_MAX_PER_APP")))
-            }
-            WifiManager.STATUS_NETWORK_SUGGESTIONS_ERROR_ADD_INVALID -> {
-                status.invoke(ConnectStatus.Error(Exception("NETWORK_SUGGESTIONS_ERROR_ADD_INVALID")))
-            }
-            WifiManager.STATUS_NETWORK_SUGGESTIONS_ERROR_ADD_NOT_ALLOWED -> {
-                status.invoke(ConnectStatus.Error(Exception("NETWORK_SUGGESTIONS_ERROR_ADD_NOT_ALLOWED")))
-            }
-            WifiManager.STATUS_NETWORK_SUGGESTIONS_ERROR_APP_DISALLOWED -> {
-                status.invoke(ConnectStatus.Error(Exception("NETWORK_SUGGESTIONS_ERROR_APP_DISALLOWED")))
-            }
-
-            WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS -> {
-                status.invoke(ConnectStatus.Success)
-            }
-
-            else -> {
-                status.invoke(ConnectStatus.Error(Exception("Unknown status: $statusCode")))
-            }
-
+        val bundle = Bundle().apply {
+            putParcelableArrayList(Settings.EXTRA_WIFI_NETWORK_LIST, suggestions)
         }
+        val intent = Intent(Settings.ACTION_WIFI_ADD_NETWORKS).apply {
+            putExtras(bundle)
+        }
+        startActivityForResult(intent, 0)
+        status.invoke(ConnectStatus.Success)
     }
 
     override fun toString(): String {

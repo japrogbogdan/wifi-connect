@@ -80,9 +80,9 @@ internal class DelegateFactory(
             is WifiConfig.Wpa2Api30 -> {
                 if (Build.VERSION.SDK_INT >= 30)
                     Wpa2Api30Delegate(
-                        wifiManager,
                         config,
-                        status
+                        status,
+                        startActivityForResult
                     ).also {
                         cache[config] = it
                     }
