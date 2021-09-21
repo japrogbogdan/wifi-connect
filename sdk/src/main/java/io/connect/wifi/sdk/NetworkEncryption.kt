@@ -1,16 +1,17 @@
 package io.connect.wifi.sdk
 
+import android.os.Parcelable
 import androidx.annotation.Keep
-import kotlinx.serialization.Serializable
-
+import kotlinx.parcelize.Parcelize
 
 /**
  * Types of encryption for wifi point
  *
  * @since 1.0.1
  */
-@Serializable
-sealed class NetworkEncryption {
+@Parcelize
+//sealed
+open class NetworkEncryption: Parcelable {
     /**
      * @suppress Not Recommended option.
      * Can use WifiConfiguration.AuthAlgorithm.SHARED authentication

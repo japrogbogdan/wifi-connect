@@ -1,6 +1,7 @@
 package io.connect.wifi.sdk
 
 import android.content.Context
+import android.net.wifi.WifiManager
 import io.connect.wifi.sdk.activity.ActivityHelper
 import io.connect.wifi.sdk.internal.Controller
 import io.connect.wifi.sdk.internal.LogUtils
@@ -23,6 +24,12 @@ class WifiConnectionCommander(
 ) {
 
     private var controller: SoftReference<Controller?>? = null
+
+    /*
+    * Check On WiFiModule
+     */
+    fun isWifiEnabled() =
+        (activity.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager).isWifiEnabled
 
     /**
      * Start connection by passing your WifiRule instance

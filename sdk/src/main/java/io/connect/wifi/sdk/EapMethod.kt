@@ -1,7 +1,8 @@
 package io.connect.wifi.sdk
 
+import android.os.Parcelable
 import androidx.annotation.Keep
-import kotlinx.serialization.Serializable
+import kotlinx.parcelize.Parcelize
 
 /**
  * Wrapper above WifiEnterpriseConfig.Eap
@@ -9,8 +10,9 @@ import kotlinx.serialization.Serializable
  *
  * @since 1.0.1
  */
-@Serializable
-sealed class EapMethod(val id: Int) {
+@Parcelize
+//sealed
+open class EapMethod(val id: Int): Parcelable {
     /**
      * @see android.net.wifi.WifiEnterpriseConfig.Eap.NONE
      */

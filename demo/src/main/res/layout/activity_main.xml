@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/bt_continue"
+        app:layout_constraintBottom_toTopOf="@id/bt_get_config"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -81,7 +81,15 @@
 
 
     <TextView
-        android:id="@+id/bt_continue"
+        android:id="@+id/bt_get_config"
+        style="@style/ButtonTextView"
+        android:layout_margin="16dp"
+        android:text="@string/get_configt"
+        app:layout_constraintBottom_toTopOf="@id/bt_connect"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/bt_connect"
         style="@style/ButtonTextView"
         android:layout_margin="16dp"
         android:text="@string/connect"

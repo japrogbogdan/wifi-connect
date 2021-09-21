@@ -54,21 +54,41 @@ class WifiSession private constructor(
     private var session: SessionExecutor? = null
 
     /**
-     * Begin connection session for current device dump & user settings (apiKey, userId, channelId, projectId)
+     * Initialization SessionExecutor
+     */
+    private fun initSessionExecutor() {
+        if (session == null) {
+            val data = SessionData(apiKey, apiDomain, channelId, projectId, userId, null)
+            val dump = DeviceDump(context).getDataDump()
+            LogUtils.debug("[WifiSession] Get session config:\ndata:$data\ndump:$dump")
+            session = SessionExecutor(
+                context,
+                data,
+                dump,
+                callback,
+                activityHelper,
+                autoDeliverSuccessCallback
+            )
+        }
+    }
+
+    /**
+     * Get session config for current device dump & user settings (apiKey, userId, channelId, projectId)
+     * save config to cache
+     */
+    fun getSessionConfig() {
+        LogUtils.debug("[WifiSession] Get session config")
+        initSessionExecutor()
+        session?.requestConfigs()
+    }
+
+    /**
+     * Begin connection session by config from cache
      */
     fun startSession() {
-        val data = SessionData(apiKey, apiDomain, channelId, projectId, userId, null)
-        val dump = DeviceDump(context).getDataDump()
-        LogUtils.debug("[WifiSession] Start session:\ndata:$data\ndump:$dump")
-        session = SessionExecutor(
-            context,
-            data,
-            dump,
-            callback,
-            activityHelper,
-            autoDeliverSuccessCallback
-        )
-        session?.start()
+        LogUtils.debug("[WifiSession] Start session")
+        initSessionExecutor()
+        session?.startConnection()
     }
 
     /**
@@ -81,6 +101,7 @@ class WifiSession private constructor(
         session?.cancel()
         session = null
     }
+
     @Keep
     data class Builder(
         /**
@@ -207,7 +228,15 @@ sealed class WiFiSessionStatus {
     }
 
     /**
-     * We fetched wifi rules & now in the process of connecting to wifi
+     * We received wifi rules
+     */
+    @Keep
+    object ReceivedConfigs : WiFiSessionStatus() {
+        override fun toString() = "ReceivedConfigs"
+    }
+
+    /**
+     * We now in the process of connecting to wifi
      */
     @Keep
     object Connecting : WiFiSessionStatus() {
@@ -234,5 +263,13 @@ sealed class WiFiSessionStatus {
     @Keep
     object CancelSession : WiFiSessionStatus() {
         override fun toString() = "CancelSession"
+    }
+
+    /**
+     * Current status WiFiModule disabled.
+     */
+    @Keep
+    object DisabledWifi : WiFiSessionStatus() {
+        override fun toString() = "DisabledWifi"
     }
 }

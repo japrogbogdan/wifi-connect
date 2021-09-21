@@ -1,7 +1,8 @@
 package io.connect.wifi.sdk
 
+import android.os.Parcelable
 import androidx.annotation.Keep
-import kotlinx.serialization.Serializable
+import kotlinx.parcelize.Parcelize
 
 /**
  * Rule that we use to connect to wifi
@@ -9,7 +10,7 @@ import kotlinx.serialization.Serializable
  *
  * @since 1.0.1
  */
-@Serializable
+@Parcelize
 class WifiRule constructor(
 
     val ruleName: String? = null,
@@ -62,7 +63,7 @@ class WifiRule constructor(
     var realm: String? = null,
     var caCertificate: String? = null,
     var successCallbackUrl: String? = null
-) {
+) : Parcelable {
     /**
      * Default WifiRule builder. This is the only option to create new rule.
      * @see io.connect.wifi.sdk.WifiRule

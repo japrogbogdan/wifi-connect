@@ -1,7 +1,11 @@
 package io.connect.wifi.demo
 
+import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
+import androidx.appcompat.app.AlertDialog
 import io.connect.wifi.demo.databinding.ActivityMainBinding
 import io.connect.wifi.sdk.WiFiSessionStatus
 import io.connect.wifi.sdk.WifiSession
@@ -54,12 +58,15 @@ class MainActivity : AppCompatActivity() {
             setHint("channel id")
             setText(cache.channelId)
         }
-        binding.btContinue.setOnClickListener {
+        binding.btGetConfig.setOnClickListener {
+            doGetConfig()
+        }
+        binding.btConnect.setOnClickListener {
             doConnect()
         }
     }
 
-    private fun doConnect() {
+    private fun initWifiSession() {
         try {
             val channel = binding.inputChannelId.getText().toInt()
             val project = binding.inputProjectId.getText().toInt()
@@ -78,10 +85,12 @@ class MainActivity : AppCompatActivity() {
                     override fun onStatusChanged(newStatus: WiFiSessionStatus) {
                         binding.tvStatus.text =
                             resources.getString(R.string.connect_status, newStatus)
+
+                        if (newStatus == WiFiSessionStatus.DisabledWifi)
+                            showWiFiDialog()
                     }
                 })
                 .create()
-            wifi?.startSession()
         } catch (e: Throwable) {
             binding.tvStatus.text = resources.getString(
                 R.string.connect_status, WiFiSessionStatus.Error(
@@ -89,6 +98,43 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
+    }
+
+    private fun showWiFiDialog() {
+        AlertDialog.Builder(this).apply {
+            setTitle(R.string.alert_dialog_title)
+            setMessage(R.string.alert_dialog_message)
+            setPositiveButton(R.string.alert_dialog_buttton_yes, positiveButtonClick)
+            setNegativeButton(R.string.alert_dialog_buttton_no, negativeButtonClick)
+            create()
+        }.show()
+    }
+
+    private val positiveButtonClick = { dialog: DialogInterface, which: Int ->
+        startActivityForResult(Intent(Settings.ACTION_WIFI_SETTINGS), 0)
+    }
+
+    private val negativeButtonClick = { dialog: DialogInterface, which: Int ->
+
+    }
+
+    private fun doGetConfig() {
+        try {
+            initWifiSession()
+            wifi?.getSessionConfig()
+        } catch (e: Throwable) {
+            binding.tvStatus.text = resources.getString(
+                R.string.connect_status, WiFiSessionStatus.Error(
+                    Exception(e)
+                )
+            )
+        }
+    }
+
+    private fun doConnect() {
+        if (wifi == null)
+            initWifiSession()
+        wifi?.startSession()
     }
 
     override fun onStop() {
@@ -105,7 +151,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun cleanSession(){
+    private fun cleanSession() {
         wifi?.let {
             it.cancelSession()
             wifi = null

@@ -10,7 +10,6 @@ import io.connect.wifi.sdk.activity.ActivityHelper
 import io.connect.wifi.sdk.analytics.ConnectResult
 import io.connect.wifi.sdk.data.DeviceData
 import io.connect.wifi.sdk.data.SessionData
-import io.connect.wifi.sdk.internal.Constants.Companion.TYPE_WPA2_API30
 import io.connect.wifi.sdk.internal.LogUtils
 import io.connect.wifi.sdk.network.RequestConfigCommand
 import io.connect.wifi.sdk.task.SendAnalyticsTask
@@ -80,11 +79,16 @@ internal class SessionExecutor(
     private var successCallback: SendSuccessConnectionTask? = null
 
     /**
-     * Begin session
+     * Сonfiguration request
      */
-    fun start() {
+    fun requestConfigs() {
+        if (commander.isWifiEnabled().not()) {
+            notifyStatusChanged(WiFiSessionStatus.DisabledWifi)
+            return
+        }
         LogUtils.debug("[SessionExecutor] Request remote configs")
         notifyStatusChanged(WiFiSessionStatus.RequestConfigs)
+
         currentFuture = backgroundExecutor.execute(
             func = {
                 val request = RequestConfigCommand(sessionData)
@@ -94,38 +98,38 @@ internal class SessionExecutor(
             resultHandler = mainThreadHandler,
             success = {
                 LogUtils.debug("[SessionExecutor] Received ${it.first.size} remote configs")
-
-                if (it.first.isNullOrEmpty())
-                    queue.addAll(cache.listWiFiRule ?: arrayListOf())
-                else {
-                    queue.addAll(it.first)
-                    (it.first as? ArrayList<WifiRule>)?.let {
-                        cache.listWiFiRule = it
-                    }
+                (it.first as? ArrayList<WifiRule>)?.let {
+                    cache.listWiFiRule = it
                 }
-
-                if (it.second.isNullOrEmpty())
-                    sessionData.traceId = cache.traceId.orEmpty()
-                else {
-                    sessionData.traceId = it.second
-                    cache.traceId = it.second
-                }
+                cache.traceId = it.second
             },
             error = {
                 LogUtils.debug("[SessionExecutor] Request configs error", it)
                 notifyStatusChanged(WiFiSessionStatus.Error(Exception(it)))
-                cache.listWiFiRule?.let { cacheListRule ->
-                    queue.addAll(cacheListRule)
-                    sessionData.traceId = cache.traceId.orEmpty()
-                    startIteration()
-                }
             },
             complete = {
                 LogUtils.debug("[SessionExecutor] Request remote finished")
-                notifyStatusChanged(WiFiSessionStatus.Connecting)
-                startIteration()
+                notifyStatusChanged(WiFiSessionStatus.ReceivedConfigs)
             }
         )
+    }
+
+    /**
+     * Try connect with rule
+     */
+    fun startConnection() {
+        if (commander.isWifiEnabled().not()) {
+            notifyStatusChanged(WiFiSessionStatus.DisabledWifi)
+            return
+        }
+        notifyStatusChanged(WiFiSessionStatus.Connecting)
+
+        //Get config from cache
+        cache.listWiFiRule?.let { cacheListRule ->
+            queue.addAll(cacheListRule)
+            sessionData.traceId = cache.traceId.orEmpty()
+        }
+        startIteration()
     }
 
     /**

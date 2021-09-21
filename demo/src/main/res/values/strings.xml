@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">WiFi Demo</string>
+    <string name="get_configt">Get config</string>
     <string name="connect">Connect</string>
     <string name="connect_status">Connection status: %1$s</string>
+    <string name="alert_dialog_title">Disabled WiFi</string>
+    <string name="alert_dialog_message">To connect, go to settings and enable Wifi </string>
+    <string name="alert_dialog_buttton_yes">Open Setting</string>
+    <string name="alert_dialog_buttton_no">Cancel</string>
 </resources>

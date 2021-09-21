@@ -80,7 +80,11 @@ private var wifi: WifiSession? = null
             .statusCallback(object : WifiSessionCallback {
                 override fun onStatusChanged(newStatus: WiFiSessionStatus) {
                     when(newStatus){
+                        WiFiSessionStatus.DisabledWifi -> { }
+
                         WiFiSessionStatus.RequestConfigs -> { }
+
+                        WiFiSessionStatus.ReceivedConfigs -> { }
 
                         WiFiSessionStatus.Connecting -> { }
 
