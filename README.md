@@ -103,7 +103,19 @@ private var wifi: WifiSession? = null
     }
 ```
 
-Step 2. Start wifi session (request config & connect to wifi):
+Step 2. Request config and save to cache:
+
+```
+    /**
+     * Get config if session instance present
+     */
+    private fun getSessionConfig(){
+        wifi?.getSessionConfig()
+    }
+
+```
+
+Step 3. Start wifi session (connect to wifi from cached config ):
 
 ```
     /**
@@ -112,9 +124,10 @@ Step 2. Start wifi session (request config & connect to wifi):
     private fun startSession(){
         wifi?.startSession()
     }
+
 ```
 
-Step 3. Clean session reference when navigate to other context (activity, fragment):
+Step 4. Clean session reference when navigate to other context (activity, fragment):
 
 ```
     /**
