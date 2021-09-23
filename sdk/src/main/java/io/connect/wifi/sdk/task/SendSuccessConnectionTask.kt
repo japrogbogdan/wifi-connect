@@ -1,6 +1,9 @@
 package io.connect.wifi.sdk.task
 
 import android.os.Handler
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
+import io.connect.wifi.sdk.data.ConnectResponseData
 import io.connect.wifi.sdk.internal.LogUtils
 import io.connect.wifi.sdk.data.SessionData
 import io.connect.wifi.sdk.network.SendSuccessConnectCallbackCommand
@@ -11,8 +14,8 @@ internal class SendSuccessConnectionTask(
     mainThreadHandler: Handler,
     backgroundExecutor: ExecutorService,
     sessionData: SessionData,
-    url: String,
-) : BaseRetryTask<Unit>(
+    url: String
+) : BaseRetryTask<String?>(//Unit
     mainThreadHandler = mainThreadHandler,
     backgroundExecutor = backgroundExecutor,
     func = {
@@ -21,7 +24,16 @@ internal class SendSuccessConnectionTask(
         cmd.sendRequest(null)
     }, success = {
         LogUtils.debug("[SendSuccessConnectionTask] Delivered url\n$url")
-    }, canRetry = { true }
+    }, canRetry = { true },
+    retryСondition = { response ->
+        response?.let {
+            try {
+                Gson().fromJson(it, ConnectResponseData::class.java).result == "error"
+            } catch (er: JsonSyntaxException) {
+                false
+            }
+        } ?: run { false }
+    }
 ) {
 
     private val retryCount = AtomicInteger(1)

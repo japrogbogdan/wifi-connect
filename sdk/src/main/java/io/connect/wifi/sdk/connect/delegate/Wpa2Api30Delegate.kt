@@ -57,7 +57,7 @@ internal class Wpa2Api30Delegate(
     }
 
     override fun toString(): String {
-        return "SuggestionDelegate(rule=$rule)"
+        return "Wpa2Api30Delegate(rule=$rule)"
     }
 
 
