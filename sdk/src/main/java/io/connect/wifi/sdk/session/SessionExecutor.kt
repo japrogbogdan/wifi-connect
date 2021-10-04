@@ -147,10 +147,16 @@ internal class SessionExecutor(
                             ConnectResult(rule, io.connect.wifi.sdk.analytics.ConnectStatus.Success)
                         )
                         sendConnectionResultToAnalytics()
+                        notifyStatusChanged(WiFiSessionStatus.Success)
                         rule.successCallbackUrl?.let { i ->
                             if (i.isNotEmpty()) triggerSuccessCallbackUrl(i)
+                        } ?: run {
+                            notifyStatusChanged(
+                                WiFiSessionStatus.ConnectionByLinkSend(
+                                    "NULL"
+                                )
+                            )
                         }
-                        notifyStatusChanged(WiFiSessionStatus.Success)
                     }
                     is ConnectStatus.Error -> {
                         LogUtils.debug("[SessionExecutor] FAILED connect by rule $rule", it.reason)
@@ -211,7 +217,20 @@ internal class SessionExecutor(
     private fun triggerSuccessCallbackUrl(url: String) {
         if (autoDeliverSuccessCallback) {
             successCallback =
-                SendSuccessConnectionTask(mainThreadHandler, backgroundExecutor, sessionData, url)
+                SendSuccessConnectionTask(mainThreadHandler, backgroundExecutor, sessionData, url,
+                    connectionByLinkSend = { link ->
+                        notifyStatusChanged(
+                            WiFiSessionStatus.ConnectionByLinkSend(
+                                link
+                            )
+                        )
+                    },
+                    connectionByLinkSuccess = {
+                        notifyStatusChanged(WiFiSessionStatus.ConnectionByLinkSuccess)
+                    },
+                    connectionByLinkError = {
+                        WiFiSessionStatus.Error(Exception(it))
+                    })
             mainThreadHandler.post(successCallback!!)
         }
     }

@@ -14,18 +14,23 @@ internal class SendSuccessConnectionTask(
     mainThreadHandler: Handler,
     backgroundExecutor: ExecutorService,
     sessionData: SessionData,
-    url: String
+    url: String,
+    connectionByLinkSend: (link: String) -> Unit,//successCallbackUrl
+    connectionByLinkSuccess: (String?) -> Unit,
+    connectionByLinkError: (Throwable) -> Unit
 ) : BaseRetryTask<String?>(//Unit
     mainThreadHandler = mainThreadHandler,
     backgroundExecutor = backgroundExecutor,
     func = {
         LogUtils.debug("[SendSuccessConnectionTask] sending : $url")
+        connectionByLinkSend.invoke(url)
         val cmd = SendSuccessConnectCallbackCommand(sessionData, url)
         cmd.sendRequest(null)
     }, success = {
         LogUtils.debug("[SendSuccessConnectionTask] Delivered url\n$url")
+        connectionByLinkSuccess.invoke(it)
     }, canRetry = { true },
-    retryСondition = { response ->
+    retryCondition = { response ->
         response?.let {
             try {
                 Gson().fromJson(it, ConnectResponseData::class.java).result == "error"
@@ -33,7 +38,8 @@ internal class SendSuccessConnectionTask(
                 false
             }
         } ?: run { false }
-    }
+    },
+    error = { connectionByLinkError.invoke(it) }
 ) {
 
     private val retryCount = AtomicInteger(1)

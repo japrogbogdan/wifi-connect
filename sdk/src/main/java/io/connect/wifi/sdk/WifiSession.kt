@@ -272,4 +272,21 @@ sealed class WiFiSessionStatus {
     object DisabledWifi : WiFiSessionStatus() {
         override fun toString() = "DisabledWifi"
     }
+
+    /**
+     * Сonnection by link started.
+     */
+    @Keep
+    data class ConnectionByLinkSend(val url: String) : WiFiSessionStatus() {
+        override fun toString() = "ConnectionByLinkSend"
+    }
+
+    /**
+     * Сonnection by link is successful.
+     */
+    @Keep
+    object ConnectionByLinkSuccess : WiFiSessionStatus() {
+        override fun toString() = "ConnectionByLinkSuccess"
+    }
+
 }

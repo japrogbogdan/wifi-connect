@@ -11,9 +11,10 @@ internal abstract class BaseRetryTask<R>(
     private val mainThreadHandler: Handler,
     private val backgroundExecutor: ExecutorService,
     private val func: Callable<R>,
-    private val success: (R) -> Unit,
+    private var success: (R) -> Unit,
     private val canRetry: () -> Boolean,
-    private var retryСondition: (R) -> Boolean = { false }
+    private var retryCondition: (R) -> Boolean = { false },
+    private var error: (Throwable) -> Unit = { }
 ) : RetryTask {
 
     private var currentFuture: Future<*>? = null
@@ -27,15 +28,18 @@ internal abstract class BaseRetryTask<R>(
             func = func,
             resultHandler = mainThreadHandler,
             success = {
-                if (retryСondition(it))
+                if (retryCondition(it))
                     retryCommand()
                 else {
                     success.invoke(it)
                     clean()
                 }
             },
-            error = { retryCommand() },
-            complete = {}
+            error = {
+                error.invoke(it)
+                retryCommand()
+            },
+            complete = { }
         )
     }
 
