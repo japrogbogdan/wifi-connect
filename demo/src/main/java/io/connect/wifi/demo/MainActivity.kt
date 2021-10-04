@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import io.connect.wifi.demo.databinding.ActivityMainBinding
 import io.connect.wifi.sdk.WiFiSessionStatus
@@ -19,7 +20,8 @@ class MainActivity : AppCompatActivity() {
     private val cache: LocalCache by lazy { LocalCache(this) }
 
     private val API_KEY =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJwaWQiOiIxIiwic3ViIjoiZGM4ZDI4NGUtOWU3Mi00NmExLTk5YTctNDRhZmM2NjAzZjk5IiwiaWF0IjoxNjIxODc4MjY3LCJzY29wZXMiOlsicmVnaXN0cmF0aW9uX2dldF93aWZpX3NldHRpbmdzIl19.yfWqqg_zg_TjH0tyIWkU_8agcSSemCDOYBA4bqApOhi8Ygji5lC5Yf3-tU2kt-zT"
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJwaWQiOiI0Iiwic3ViIjoiMThhZTAwN2QtODIzYS00NDZjLTkwMzktYTg1YjQ1ZDg0MDNmIiwiaWF0IjoxNjI5OTA4MzY5LCJzY29wZXMiOlsicmVnaXN0cmF0aW9uIiwicmVnaXN0cmF0aW9uX2dldF93aWZpX3NldHRpbmdzIl19.SspnNcCFslfCI1D0QTxr3ac6xkNNGdAdPpaMPjquD75LUAXEOdzHBHCj8mbM2SSa"
+    //"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJwaWQiOiIxIiwic3ViIjoiZGM4ZDI4NGUtOWU3Mi00NmExLTk5YTctNDRhZmM2NjAzZjk5IiwiaWF0IjoxNjIxODc4MjY3LCJzY29wZXMiOlsicmVnaXN0cmF0aW9uX2dldF93aWZpX3NldHRpbmdzIl19.yfWqqg_zg_TjH0tyIWkU_8agcSSemCDOYBA4bqApOhi8Ygji5lC5Yf3-tU2kt-zT"
 
     private var wifi: WifiSession? = null
 
@@ -40,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             setHint("user id")
 
             var id = cache.userId
-            if (id.isEmpty()) id = "pntr54355430-dfbdb43-43t34mmljbdf"
+            if (id.isEmpty()) id = "25733d6b-90cb-4abd-b593-128c3bd0c183" //"pntr54355430-dfbdb43-43t34mmljbdf"
             setText(id)
         }
         binding.inputApiDomain.apply {
@@ -85,9 +87,35 @@ class MainActivity : AppCompatActivity() {
                     override fun onStatusChanged(newStatus: WiFiSessionStatus) {
                         binding.tvStatus.text =
                             resources.getString(R.string.connect_status, newStatus)
+                        when (newStatus) {
+                            WiFiSessionStatus.DisabledWifi -> {
+                                showWiFiDialog()
+                            }
+                            WiFiSessionStatus.RequestConfigs -> {
+                                Toast.makeText(this@MainActivity, "RequestConfigs", Toast.LENGTH_SHORT).show()
+                            }
+                            WiFiSessionStatus.ReceivedConfigs -> {
+                                Toast.makeText(this@MainActivity, "ReceivedConfigs", Toast.LENGTH_SHORT).show()
+                            }
+                            WiFiSessionStatus.Connecting -> {
+                                Toast.makeText(this@MainActivity, "Connecting", Toast.LENGTH_SHORT).show()
+                            }
+                            WiFiSessionStatus.Success -> {
+                                Toast.makeText(this@MainActivity, "Connecting Success", Toast.LENGTH_SHORT).show()
+                            }
+                            is WiFiSessionStatus.ConnectionByLinkSend -> {
+                                Toast.makeText(this@MainActivity, "ConnectionByLink Url=${newStatus.url}", Toast.LENGTH_LONG).show()
+                            }
+                            WiFiSessionStatus.ConnectionByLinkSuccess -> {
+                                Toast.makeText(this@MainActivity, "ConnectionByLink Success", Toast.LENGTH_SHORT).show()
+                            }
+                            is WiFiSessionStatus.Error -> {
+                                //check the reason
+                                newStatus.reason.printStackTrace()
+                                Toast.makeText(this@MainActivity, "Connection ${newStatus.reason}", Toast.LENGTH_LONG).show()
+                            }
+                        }
 
-                        if (newStatus == WiFiSessionStatus.DisabledWifi)
-                            showWiFiDialog()
                     }
                 })
                 .create()
@@ -111,7 +139,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val positiveButtonClick = { dialog: DialogInterface, which: Int ->
-        startActivityForResult(Intent(Settings.ACTION_WIFI_SETTINGS), 0)
+        this.startActivityForResult(Intent(Settings.ACTION_WIFI_SETTINGS), 0)
     }
 
     private val negativeButtonClick = { dialog: DialogInterface, which: Int ->

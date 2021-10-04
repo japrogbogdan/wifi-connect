@@ -90,6 +90,8 @@ private var wifi: WifiSession? = null
 
                         WiFiSessionStatus.Success -> { }
 
+
+
                         is WiFiSessionStatus.Error -> {
                             //check the reason
                             newStatus.reason.printStackTrace()
