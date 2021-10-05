@@ -226,10 +226,11 @@ internal class SessionExecutor(
                         )
                     },
                     connectionByLinkSuccess = {
-                        notifyStatusChanged(WiFiSessionStatus.ConnectionByLinkSuccess)
+                        notifyStatusChanged(WiFiSessionStatus.ConnectionByLinkSuccess(it))
                     },
-                    connectionByLinkError = {
-                        WiFiSessionStatus.Error(Exception(it))
+                    connectionByLinkError = { throwable, string ->
+                        throwable?.let { notifyStatusChanged(WiFiSessionStatus.Error(Exception(it))) }
+                        string?.let { notifyStatusChanged(WiFiSessionStatus.Error(Exception(it))) }
                     })
             mainThreadHandler.post(successCallback!!)
         }

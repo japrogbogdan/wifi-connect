@@ -1,5 +1,6 @@
 package io.connect.wifi.demo
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -119,13 +120,13 @@ class MainActivity : AppCompatActivity() {
                                 Toast.makeText(
                                     this@MainActivity,
                                     "ConnectionByLink Url=${newStatus.url}",
-                                    Toast.LENGTH_LONG
+                                    Toast.LENGTH_SHORT
                                 ).show()
                             }
-                            WiFiSessionStatus.ConnectionByLinkSuccess -> {
+                            is WiFiSessionStatus.ConnectionByLinkSuccess -> {
                                 Toast.makeText(
                                     this@MainActivity,
-                                    "ConnectionByLink Success",
+                                    "ConnectionByLinkSuccess respose=${newStatus.response}",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
@@ -134,8 +135,8 @@ class MainActivity : AppCompatActivity() {
                                 newStatus.reason.printStackTrace()
                                 Toast.makeText(
                                     this@MainActivity,
-                                    "Connection ${newStatus.reason}",
-                                    Toast.LENGTH_LONG
+                                    "Connection Error=${newStatus.reason.message}",
+                                    Toast.LENGTH_SHORT
                                 ).show()
                             }
                         }
@@ -168,6 +169,20 @@ class MainActivity : AppCompatActivity() {
 
     private val negativeButtonClick = { dialog: DialogInterface, which: Int ->
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            0 -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    Toast.makeText(this, "Save WiFi", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Cancel Save WiFi", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        }
     }
 
     private fun doGetConfig() {

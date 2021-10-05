@@ -285,8 +285,6 @@ sealed class WiFiSessionStatus {
      * Сonnection by link is successful.
      */
     @Keep
-    object ConnectionByLinkSuccess : WiFiSessionStatus() {
-        override fun toString() = "ConnectionByLinkSuccess"
-    }
+    data class ConnectionByLinkSuccess(val response: String?) : WiFiSessionStatus()
 
 }

@@ -80,12 +80,10 @@ private var wifi: WifiSession? = null
                         is WiFiSessionStatus.ConnectionByLinkSend -> {
                             val link = newStatus.url
                         }
-                        WiFiSessionStatus.ConnectionByLinkSuccess -> { }
 
-                        is WiFiSessionStatus.ConnectionByLinkSend -> {
-                            val link = newStatus.url
+                        is WiFiSessionStatus.ConnectionByLinkSuccess -> {
+                            val response = newStatus.response
                         }
-                        WiFiSessionStatus.ConnectionByLinkSuccess -> { }
 
                         is WiFiSessionStatus.Error -> {
                             //check the reason

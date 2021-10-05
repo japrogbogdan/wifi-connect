@@ -17,7 +17,7 @@ internal class SendSuccessConnectionTask(
     url: String,
     connectionByLinkSend: (link: String) -> Unit,//successCallbackUrl
     connectionByLinkSuccess: (String?) -> Unit,
-    connectionByLinkError: (Throwable) -> Unit
+    connectionByLinkError: (Throwable?, String?) -> Unit
 ) : BaseRetryTask<String?>(//Unit
     mainThreadHandler = mainThreadHandler,
     backgroundExecutor = backgroundExecutor,
@@ -33,13 +33,16 @@ internal class SendSuccessConnectionTask(
     retryCondition = { response ->
         response?.let {
             try {
-                Gson().fromJson(it, ConnectResponseData::class.java).result == "error"
+                val result = Gson().fromJson(it, ConnectResponseData::class.java).result == "error"
+                if (result)
+                    connectionByLinkError.invoke(null, it)
+                result
             } catch (er: JsonSyntaxException) {
                 false
             }
         } ?: run { false }
     },
-    error = { connectionByLinkError.invoke(it) }
+    error = { connectionByLinkError.invoke(it, null) }
 ) {
 
     private val retryCount = AtomicInteger(1)
