@@ -1,12 +1,11 @@
 package io.connect.wifi.sdk.task
 
 import android.os.Handler
-import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import io.connect.wifi.sdk.data.ConnectResponseData
 import io.connect.wifi.sdk.internal.LogUtils
 import io.connect.wifi.sdk.data.SessionData
 import io.connect.wifi.sdk.network.SendSuccessConnectCallbackCommand
+import org.json.JSONObject
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -33,7 +32,7 @@ internal class SendSuccessConnectionTask(
     retryCondition = { response ->
         response?.let {
             try {
-                val result = Gson().fromJson(it, ConnectResponseData::class.java).result == "error"
+                val result = JSONObject(it).get("result") == "error"
                 if (result)
                     connectionByLinkError.invoke(null, it)
                 result
