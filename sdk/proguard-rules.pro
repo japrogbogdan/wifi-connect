@@ -30,6 +30,11 @@
 -keep class io.connect.wifi.sdk.ConnectStatus { *; }
 -keep class io.connect.wifi.sdk.activity.** { *; }
 
+-keepclassmembers class io.connect.wifi.sdk.WifiSession {
+    public static ** Companion;
+}
+-keep class io.connect.wifi.sdk.WifiSession$Companion { *; }
+
 -keepclassmembers class * extends java.lang.Enum {
     <fields>;
     public static **[] values();
