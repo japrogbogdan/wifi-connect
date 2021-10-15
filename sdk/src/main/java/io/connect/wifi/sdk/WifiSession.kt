@@ -1,6 +1,7 @@
 package io.connect.wifi.sdk
 
 import android.content.Context
+import android.net.wifi.WifiManager
 import androidx.annotation.Keep
 import io.connect.wifi.sdk.activity.ActivityHelper
 import io.connect.wifi.sdk.data.SessionData
@@ -50,6 +51,14 @@ class WifiSession private constructor(
      */
     val activityHelper: ActivityHelper?
 ) {
+
+    companion object {
+        /*
+        * Check On WiFiModule
+         */
+        fun isWifiEnabled(context: Context) =
+            (context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager).isWifiEnabled
+    }
 
     private var session: SessionExecutor? = null
 
@@ -263,14 +272,6 @@ sealed class WiFiSessionStatus {
     @Keep
     object CancelSession : WiFiSessionStatus() {
         override fun toString() = "CancelSession"
-    }
-
-    /**
-     * Current status WiFiModule disabled.
-     */
-    @Keep
-    object DisabledWifi : WiFiSessionStatus() {
-        override fun toString() = "DisabledWifi"
     }
 
     /**

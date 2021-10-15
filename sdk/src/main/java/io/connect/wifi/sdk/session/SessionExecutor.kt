@@ -82,13 +82,8 @@ internal class SessionExecutor(
      * Сonfiguration request
      */
     fun requestConfigs() {
-        if (commander.isWifiEnabled().not()) {
-            notifyStatusChanged(WiFiSessionStatus.DisabledWifi)
-            return
-        }
         LogUtils.debug("[SessionExecutor] Request remote configs")
         notifyStatusChanged(WiFiSessionStatus.RequestConfigs)
-
         currentFuture = backgroundExecutor.execute(
             func = {
                 val request = RequestConfigCommand(sessionData)
@@ -118,12 +113,7 @@ internal class SessionExecutor(
      * Try connect with rule
      */
     fun startConnection() {
-        if (commander.isWifiEnabled().not()) {
-            notifyStatusChanged(WiFiSessionStatus.DisabledWifi)
-            return
-        }
         notifyStatusChanged(WiFiSessionStatus.Connecting)
-
         //Get config from cache
         cache.listWiFiRule?.let { cacheListRule ->
             queue.addAll(cacheListRule)

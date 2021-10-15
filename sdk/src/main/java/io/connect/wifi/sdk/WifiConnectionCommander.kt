@@ -25,12 +25,6 @@ class WifiConnectionCommander(
 
     private var controller: SoftReference<Controller?>? = null
 
-    /*
-    * Check On WiFiModule
-     */
-    fun isWifiEnabled() =
-        (activity.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager).isWifiEnabled
-
     /**
      * Start connection by passing your WifiRule instance
      *

@@ -43,7 +43,16 @@ Reopen the same class.
 
 ## Steps to connect to wifi:
 
-Step 1. Create wifi session instance:
+Step1. Check On WiFiModule
+
+    /**
+     * Сheck if Wi-Fi is enabled
+     */
+    fun isWifiEnabled(context: Context): Boolean
+
+```
+
+Step 2. Create wifi session instance:
 
 ```
 private var wifi: WifiSession? = null
@@ -67,8 +76,6 @@ private var wifi: WifiSession? = null
             .statusCallback(object : WifiSessionCallback {
                 override fun onStatusChanged(newStatus: WiFiSessionStatus) {
                     when(newStatus){
-                        WiFiSessionStatus.DisabledWifi -> { }
-
                         WiFiSessionStatus.RequestConfigs -> { }
 
                         WiFiSessionStatus.ReceivedConfigs -> { }
@@ -98,7 +105,7 @@ private var wifi: WifiSession? = null
     }
 ```
 
-Step 2. Request config and save to cache:
+Step 3. Request config and save to cache:
 
 ```
     /**
@@ -110,7 +117,7 @@ Step 2. Request config and save to cache:
 
 ```
 
-Step 3. Start wifi session (connect to wifi from cached config ):
+Step 4. Start wifi session (connect to wifi from cached config ):
 
 ```
     /**
@@ -122,7 +129,7 @@ Step 3. Start wifi session (connect to wifi from cached config ):
 
 ```
 
-Step 4. Clean session reference when navigate to other context (activity, fragment):
+Step 5. Clean session reference when navigate to other context (activity, fragment):
 
 ```
     /**

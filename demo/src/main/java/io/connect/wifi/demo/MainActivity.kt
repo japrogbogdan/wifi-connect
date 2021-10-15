@@ -88,9 +88,6 @@ class MainActivity : AppCompatActivity() {
                         binding.tvStatus.text =
                             resources.getString(R.string.connect_status, newStatus)
                         when (newStatus) {
-                            WiFiSessionStatus.DisabledWifi -> {
-                                showWiFiDialog()
-                            }
                             WiFiSessionStatus.RequestConfigs -> {
                                 Toast.makeText(
                                     this@MainActivity,
@@ -175,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             0 -> {
-                if(resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     Toast.makeText(this, "Save WiFi", Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(this, "Cancel Save WiFi", Toast.LENGTH_SHORT).show()
@@ -186,22 +183,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun doGetConfig() {
-        try {
-            initWifiSession()
-            wifi?.getSessionConfig()
-        } catch (e: Throwable) {
-            binding.tvStatus.text = resources.getString(
-                R.string.connect_status, WiFiSessionStatus.Error(
-                    Exception(e)
+        if (WifiSession.isWifiEnabled(this).not())
+            showWiFiDialog()
+        else
+            try {
+                initWifiSession()
+                wifi?.getSessionConfig()
+            } catch (e: Throwable) {
+                binding.tvStatus.text = resources.getString(
+                    R.string.connect_status, WiFiSessionStatus.Error(
+                        Exception(e)
+                    )
                 )
-            )
-        }
+            }
     }
 
     private fun doConnect() {
-        if (wifi == null)
-            initWifiSession()
-        wifi?.startSession()
+        if (WifiSession.isWifiEnabled(this).not())
+            showWiFiDialog()
+        else {
+            if (wifi == null)
+                initWifiSession()
+            wifi?.startSession()
+        }
     }
 
     override fun onStop() {
