@@ -78,7 +78,7 @@ internal abstract class BaseSupportDelegate(
     /**
      * Do connection by config
      */
-    protected fun updateNetwork(){
+    protected fun updateNetwork() {
         findNetworkInExistingConfig()?.let {
             wifiManager.removeNetwork(it)
             wifiManager.saveConfiguration()
@@ -90,7 +90,21 @@ internal abstract class BaseSupportDelegate(
             if (wifiManager.enableNetwork(networkId, true)) {
                 wifiManager.saveConfiguration()
             }
-            status?.invoke(ConnectStatus.Success)
+
+            var count = 0
+            while (count < 5 && (!wifiManager.isWifiEnabled || wifiManager.connectionInfo.ssid != config?.SSID)) {
+                try {
+                    Thread.sleep(2000L)
+                } catch (ie: InterruptedException) {
+                    // continue
+                }
+                count++
+            }
+
+            if (wifiManager.isWifiEnabled && wifiManager.connectionInfo.ssid == config?.SSID)
+                status?.invoke(ConnectStatus.Success)
+            else
+                status?.invoke(ConnectStatus.Error(Exception("Can't enable wifi ssid network")))
         } else status?.invoke(ConnectStatus.Error(Exception("Can't add network")))
     }
 
