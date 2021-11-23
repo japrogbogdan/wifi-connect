@@ -1,6 +1,7 @@
 package io.connect.wifi.sdk.connect
 
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import io.connect.wifi.sdk.ConnectStatus
 import io.connect.wifi.sdk.internal.LogUtils
@@ -25,6 +26,11 @@ internal class ConnectionManager(
     wifiManager: WifiManager,
 
     /**
+     * @param - reference to [android.net.ConnectivityManager]
+     */
+    connectivityManager: ConnectivityManager,
+
+    /**
      * we use to run [android.app.Activity.startActivityForResult] on android 30+ versions
      */
     startActivityForResult: (Intent, Int) -> Unit,
@@ -35,7 +41,7 @@ internal class ConnectionManager(
 ) {
 
     private val delegateFactory: DelegateFactory by lazy {
-        DelegateFactory(wifiManager, startActivityForResult, certificateFactory, status)
+        DelegateFactory(wifiManager, connectivityManager, startActivityForResult, certificateFactory, status)
     }
 
     /**

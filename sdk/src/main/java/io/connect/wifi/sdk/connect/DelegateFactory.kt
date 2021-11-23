@@ -1,6 +1,7 @@
 package io.connect.wifi.sdk.connect
 
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import io.connect.wifi.sdk.ConnectStatus
@@ -25,6 +26,11 @@ internal class DelegateFactory(
      * @param - reference to [android.net.wifi.WifiManager]
      */
     private val wifiManager: WifiManager,
+
+    /**
+     * @param - reference to [android.net.ConnectivityManager]
+     */
+    private val connectivityManager: ConnectivityManager,
 
     /**
      * we use to run [android.app.Activity.startActivityForResult] on android 30+ versions
@@ -57,13 +63,13 @@ internal class DelegateFactory(
         if (cached != null) return cached
 
         return when (config) {
-            is WifiConfig.SupportNetworkWep -> WebDelegate(wifiManager, config).also {
+            is WifiConfig.SupportNetworkWep -> WebDelegate(wifiManager, connectivityManager, config).also {
                 cache[config] = it
             }
-            is WifiConfig.SupportNetworkWpa2 -> Wpa2Delegate(wifiManager, config, status).also {
+            is WifiConfig.SupportNetworkWpa2 -> Wpa2Delegate(wifiManager, connectivityManager, config, status).also {
                 cache[config] = it
             }
-            is WifiConfig.SupportNetworkWpa2Eap -> Wpa2EapDelegate(wifiManager, config).also {
+            is WifiConfig.SupportNetworkWpa2Eap -> Wpa2EapDelegate(wifiManager, connectivityManager, config).also {
                 cache[config] = it
             }
             is WifiConfig.Wpa2PassphraseSuggestion -> {

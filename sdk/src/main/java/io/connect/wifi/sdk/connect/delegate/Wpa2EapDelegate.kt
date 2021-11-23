@@ -1,9 +1,8 @@
 package io.connect.wifi.sdk.connect.delegate
 
+import android.net.ConnectivityManager
 import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
-import android.os.Build
-import androidx.annotation.RequiresApi
 import io.connect.wifi.sdk.config.WifiConfig
 
 /**
@@ -18,8 +17,9 @@ import io.connect.wifi.sdk.config.WifiConfig
 @Deprecated("Unused")
 internal class Wpa2EapDelegate(
     wifiManager: WifiManager,
+    connectivityManager: ConnectivityManager,
     private val rule: WifiConfig.SupportNetworkWpa2Eap
-) : BaseSupportDelegate(wifiManager) {
+) : BaseSupportDelegate(wifiManager, connectivityManager) {
 
     /**
      * Connect to wifi using previously created delegate implementation

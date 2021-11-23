@@ -1,5 +1,6 @@
 package io.connect.wifi.sdk.connect.delegate
 
+import android.net.ConnectivityManager
 import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
 import android.os.Build
@@ -18,8 +19,9 @@ import io.connect.wifi.sdk.config.WifiConfig
 @Deprecated("Unused")
 internal class WebDelegate(
     wifiManager: WifiManager,
+    connectivityManager: ConnectivityManager,
     private val rule: WifiConfig.SupportNetworkWep
-) : BaseSupportDelegate(wifiManager) {
+) : BaseSupportDelegate(wifiManager, connectivityManager) {
 
     /**
      * Connect to wifi using previously created delegate implementation

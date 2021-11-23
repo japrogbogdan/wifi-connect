@@ -1,12 +1,16 @@
 package io.connect.wifi.sdk.internal
 
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.HandlerCompat
 import io.connect.wifi.sdk.ConnectStatus
 import io.connect.wifi.sdk.WifiRule
@@ -40,12 +44,15 @@ internal class Controller(private val activityHelper: ActivityHelper?) {
     }
 
     private val factory: WifiConfigFactory by lazy { WifiConfigFactory() }
+    private var wifiManager: WifiManager? = null
+    private var rule: WifiRule? = null
     private var manager: ConnectionManager? = null
     private var command: ConnectionCommand? = null
     private var activityReference: SoftReference<Activity>? = null
     private var certificateFactory: CertificateFactoryImpl? = null
     private var currentFuture: Future<*>? = null
     private var statusCallback: ((ConnectStatus) -> Unit)? = null
+    private var ctx: Context? = null
 
     /**
      * Start connection by rules.
@@ -58,8 +65,9 @@ internal class Controller(private val activityHelper: ActivityHelper?) {
      * @see io.connect.wifi.sdk.WifiRule
      */
     fun startConnection(context: Context, rule: WifiRule) {
+        ctx = context
         initParams(context)
-        doConnect(rule)
+        doScanWiFiAndConnection(rule) //old doConnect(rule)
     }
 
     fun addStatusCallback(callback: (ConnectStatus) -> Unit) {
@@ -85,13 +93,23 @@ internal class Controller(private val activityHelper: ActivityHelper?) {
             LogUtils.debug("[Controller] init references")
             val wifi =
                 context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            wifiManager = wifi
+            val connectivityManager =
+                context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
             (context as? Activity)?.let {
                 activityReference = SoftReference(it)
             }
+
             certificateFactory = CertificateFactoryImpl(CertificateStorageImpl())
             manager =
-                ConnectionManager(wifi, startActivityForResult, certificateFactory!!, connectStatus)
+                ConnectionManager(
+                    wifi,
+                    connectivityManager,
+                    startActivityForResult,
+                    certificateFactory!!,
+                    connectStatus
+                )
         }
 
         if (command == null) {
@@ -99,6 +117,44 @@ internal class Controller(private val activityHelper: ActivityHelper?) {
         }
     }
 
+    /**
+     * Wifi Scan Receiver
+     */
+    val wifiScanReceiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent) {
+            val success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)
+            ctx?.unregisterReceiver(this)
+            scanResults()
+        }
+    }
+
+    private fun scanResults() {
+        wifiManager?.scanResults?.let { scanResults ->
+            rule?.let { wifiRule ->
+                if (scanResults.count { it.SSID == wifiRule.ssid } > 0)
+                    doConnect(wifiRule)
+                else {
+                    LogUtils.debug("Wifi scanSucce Can't find wifi current ssid")
+                    connectStatus.invoke(ConnectStatus.NotFoundWiFiPoint(wifiRule.ssid))
+                }
+            }
+        }
+    }
+
+    private fun doScanWiFiAndConnection(wifiRule: WifiRule) {
+        rule = wifiRule
+        // Register the receiver
+        ctx?.registerReceiver(
+            wifiScanReceiver,
+            IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
+        )
+        val success = wifiManager?.startScan() ?: false
+        if (success.not()) {
+            scanResults()
+            ctx?.unregisterReceiver(wifiScanReceiver)
+        }
+    }
 
     private fun doConnect(rule: WifiRule) {
         cancelConnect()
@@ -132,5 +188,6 @@ internal class Controller(private val activityHelper: ActivityHelper?) {
             it.cancel(false)
             currentFuture = null
         }
+        ctx = null
     }
 }

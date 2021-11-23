@@ -1,9 +1,8 @@
 package io.connect.wifi.sdk.connect.delegate
 
+import android.net.ConnectivityManager
 import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
-import android.os.Build
-import androidx.annotation.RequiresApi
 import io.connect.wifi.sdk.ConnectStatus
 import io.connect.wifi.sdk.config.WifiConfig
 
@@ -18,9 +17,10 @@ import io.connect.wifi.sdk.config.WifiConfig
  */
 internal class Wpa2Delegate(
     wifiManager: WifiManager,
+    connectivityManager: ConnectivityManager,
     private val rule: WifiConfig.SupportNetworkWpa2,
     status: (ConnectStatus) -> Unit
-) : BaseSupportDelegate(wifiManager, status) {
+) : BaseSupportDelegate(wifiManager, connectivityManager, status) {
 
     /**
      * Connect to wifi using previously created delegate implementation

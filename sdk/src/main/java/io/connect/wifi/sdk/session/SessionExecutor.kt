@@ -148,6 +148,13 @@ internal class SessionExecutor(
                             )
                         }
                     }
+                    is ConnectStatus.NotFoundWiFiPoint -> {
+                        notifyStatusChanged(
+                            WiFiSessionStatus.NotFoundWiFiPoint(
+                                it.ssid
+                            )
+                        )
+                    }
                     is ConnectStatus.Error -> {
                         LogUtils.debug("[SessionExecutor] FAILED connect by rule $rule", it.reason)
                         connectionResult.add(

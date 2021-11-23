@@ -1,13 +1,12 @@
 package io.connect.wifi.sdk.connect.delegate
 
 import android.annotation.SuppressLint
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
 import android.os.Build
-import androidx.annotation.RequiresApi
 import io.connect.wifi.sdk.ConnectStatus
-import io.connect.wifi.sdk.config.WifiConfig
-import java.lang.Exception
 import java.util.regex.Pattern
 
 /**
@@ -19,6 +18,7 @@ import java.util.regex.Pattern
  */
 internal abstract class BaseSupportDelegate(
     private val wifiManager: WifiManager,
+    private val connectivityManager: ConnectivityManager,
     private val status: ((ConnectStatus) -> Unit)? = null
 ) : ConnectionDelegate {
     /**
@@ -86,10 +86,13 @@ internal abstract class BaseSupportDelegate(
 
         val networkId = wifiManager.addNetwork(config)
         if (networkId >= 0) {
+            wifiManager.disconnect()
             // Try to disable the current network and start a new one.
-            if (wifiManager.enableNetwork(networkId, true)) {
+            if (wifiManager.enableNetwork(networkId, true)) {//true
                 wifiManager.saveConfiguration()
             }
+
+            wifiManager.reconnect()
 
             var count = 0
             while (count < 5 && (!wifiManager.isWifiEnabled || wifiManager.connectionInfo.ssid != config?.SSID)) {
@@ -101,11 +104,40 @@ internal abstract class BaseSupportDelegate(
                 count++
             }
 
-            if (wifiManager.isWifiEnabled && wifiManager.connectionInfo.ssid == config?.SSID)
+            if (wifiManager.isWifiEnabled &&
+                wifiManager.connectionInfo.ssid == config?.SSID &&
+                isConnectWiFi(connectivityManager)
+            )
                 status?.invoke(ConnectStatus.Success)
             else
                 status?.invoke(ConnectStatus.Error(Exception("Can't enable wifi ssid network")))
         } else status?.invoke(ConnectStatus.Error(Exception("Can't add network")))
+    }
+
+    @Suppress("DEPRECATION")
+    fun isConnectWiFi(connectivityManager: ConnectivityManager?): Boolean {
+        var result = false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            connectivityManager?.run {
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)?.run {
+                    result = when {
+                        hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                        else -> false
+                    }
+                }
+            }
+        } else {
+            connectivityManager?.run {
+                connectivityManager.activeNetworkInfo?.run {
+                    if (type == ConnectivityManager.TYPE_WIFI && isConnected) {
+                        result = true
+                    } else {
+                        result = true
+                    }
+                }
+            }
+        }
+        return result
     }
 
     @SuppressLint("MissingPermission")

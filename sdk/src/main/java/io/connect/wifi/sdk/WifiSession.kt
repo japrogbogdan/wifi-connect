@@ -1,14 +1,21 @@
 package io.connect.wifi.sdk
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
+import android.os.Build
 import androidx.annotation.Keep
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import io.connect.wifi.sdk.activity.ActivityHelper
 import io.connect.wifi.sdk.data.SessionData
 import io.connect.wifi.sdk.internal.LogUtils
 import io.connect.wifi.sdk.session.SessionExecutor
 import io.connect.wifi.sdk.util.DeviceDump
 import java.lang.Exception
+import java.lang.ref.SoftReference
 
 /**
  * Connect to wifi command
@@ -58,6 +65,16 @@ class WifiSession private constructor(
          */
         fun isWifiEnabled(context: Context) =
             (context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager).isWifiEnabled
+
+        const val SCAN_WIFI_REQUEST_CODE = 12345
+
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.CHANGE_WIFI_STATE
+        )
     }
 
     private var session: SessionExecutor? = null
@@ -97,7 +114,58 @@ class WifiSession private constructor(
     fun startSession() {
         LogUtils.debug("[WifiSession] Start session")
         initSessionExecutor()
+        checkAndStartScanWifi() //old session?.startConnection()
+    }
+
+    private fun checkAndStartScanWifi() {
+        // With Android Level >= 23, you have to ask the user for permission to Call.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 23
+            var result: Int
+            val listPermissionsNeeded: MutableList<String> = ArrayList()
+
+            for (p in permissions) {
+                result = ContextCompat.checkSelfPermission(context, p)
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    listPermissionsNeeded.add(p)
+                }
+            }
+
+            // Check for permissions
+            if (listPermissionsNeeded.isNotEmpty()) {
+                (context as? Activity)?.let { activity ->
+                    // Request permissions
+                    ActivityCompat.requestPermissions(
+                        activity,
+                        listPermissionsNeeded.toTypedArray(),
+                        SCAN_WIFI_REQUEST_CODE
+                    )
+                }
+                return
+            }
+            //Permissions Already Granted
+        }
+
         session?.startConnection()
+    }
+
+    fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            SCAN_WIFI_REQUEST_CODE -> {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted
+                    startSession()
+                } else {
+                    // Permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    checkAndStartScanWifi()
+                }
+            }
+        }
     }
 
     /**
@@ -287,5 +355,11 @@ sealed class WiFiSessionStatus {
      */
     @Keep
     data class ConnectionByLinkSuccess(val response: String?) : WiFiSessionStatus()
+
+    /**
+     *  Unsuccessful wifi point search
+     */
+    @Keep
+    data class NotFoundWiFiPoint(val ssid: String?) : WiFiSessionStatus()
 
 }

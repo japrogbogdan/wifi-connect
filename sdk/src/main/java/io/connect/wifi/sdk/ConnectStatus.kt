@@ -29,4 +29,10 @@ sealed class ConnectStatus {
     @Keep
     data class Error(val reason: Exception) : ConnectStatus()
 
+    /**
+     * Unsuccessful wifi point search.
+     */
+    @Keep
+    data class NotFoundWiFiPoint(val ssid: String?) : ConnectStatus()
+
 }
