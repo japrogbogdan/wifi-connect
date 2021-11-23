@@ -1,5 +1,6 @@
 package io.connect.wifi.demo
 
+
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
@@ -14,6 +15,9 @@ import io.connect.wifi.sdk.WifiSession
 import io.connect.wifi.sdk.WifiSessionCallback
 import ui.helper.LocalCache
 import java.lang.Exception
+import io.connect.wifi.sdk.activity.ActivityHelper
+import io.connect.wifi.sdk.activity.ActivityHelperDelegate
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -68,6 +72,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        wifi?.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     private fun initWifiSession() {
         try {
             val channel = binding.inputChannelId.getText().toInt()
@@ -76,6 +88,8 @@ class MainActivity : AppCompatActivity() {
             //удаляем сессию, если уже есть такая
             cleanSession()
 
+            //val activityHelper: ActivityHelper = ActivityHelperDelegate(activity = this@MainActivity)
+
             wifi = WifiSession.Builder(context = this)
                 .apiKey(binding.inputToken.getText())
                 .userId(binding.inputUserId.getText())
@@ -83,6 +97,7 @@ class MainActivity : AppCompatActivity() {
                 .channelId(channel)
                 .projectId(project)
                 .autoDeliverSuccessCallback(true)
+                //.activityHelper(activityHelper)
                 .statusCallback(object : WifiSessionCallback {
                     override fun onStatusChanged(newStatus: WiFiSessionStatus) {
                         binding.tvStatus.text =
@@ -124,6 +139,13 @@ class MainActivity : AppCompatActivity() {
                                 Toast.makeText(
                                     this@MainActivity,
                                     "ConnectionByLinkSuccess respose=${newStatus.response}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            is WiFiSessionStatus.NotFoundWiFiPoint -> {
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "Can\'t find wifi current ssid=${newStatus.ssid}",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }

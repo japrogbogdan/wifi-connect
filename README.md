@@ -105,6 +105,10 @@ private var wifi: WifiSession? = null
                             val response = newStatus.response
                         }
 
+                        is WiFiSessionStatus.NotFoundWiFiPoint -> {
+                            val ssid = newStatus.ssid
+                        }
+
                         is WiFiSessionStatus.Error -> {
                             //check the reason
                             newStatus.reason.printStackTrace()
@@ -118,7 +122,23 @@ private var wifi: WifiSession? = null
     }
 ```
 
-Step 3. Request config and save to cache:
+Step 3. Request permissions result for wifi scan:
+
+```
+
+    /**
+     * Permissions result sent from activity into wifi session instance
+     */
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        wifi?.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+```
+
+Step 4. Request config and save to cache:
 
 ```
     /**
@@ -130,7 +150,7 @@ Step 3. Request config and save to cache:
 
 ```
 
-Step 4. Start wifi session (connect to wifi from cached config ):
+Step 5. Start wifi session (connect to wifi from cached config ):
 
 ```
     /**
@@ -142,7 +162,7 @@ Step 4. Start wifi session (connect to wifi from cached config ):
 
 ```
 
-Step 5. Clean session reference when navigate to other context (activity, fragment):
+Step 6. Clean session reference when navigate to other context (activity, fragment):
 
 ```
     /**
