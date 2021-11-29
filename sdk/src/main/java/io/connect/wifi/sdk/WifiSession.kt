@@ -119,7 +119,7 @@ class WifiSession private constructor(
 
     private fun checkAndStartScanWifi() {
         // With Android Level >= 23, you have to ask the user for permission to Call.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // 23
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) { // 23
             var result: Int
             val listPermissionsNeeded: MutableList<String> = ArrayList()
 
