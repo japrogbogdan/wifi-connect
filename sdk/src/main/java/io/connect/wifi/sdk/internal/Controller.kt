@@ -7,11 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.os.Process
-import androidx.appcompat.app.AppCompatActivity
+import android.os.*
 import androidx.core.os.HandlerCompat
 import io.connect.wifi.sdk.ConnectStatus
 import io.connect.wifi.sdk.WifiRule
@@ -68,10 +64,10 @@ internal class Controller(private val activityHelper: ActivityHelper?) {
     fun startConnection(context: Context, rule: WifiRule) {
         ctx = context
         initParams(context)
-        if (Build.VERSION.SDK_INT <= 28)
-            doScanWiFiAndConnection(rule)
-        else
-            doConnect(rule)
+        when {
+            Build.VERSION.SDK_INT <= 29 -> doScanWiFiAndConnection(rule)
+            else -> doConnect(rule)
+        }
     }
 
     fun addStatusCallback(callback: (ConnectStatus) -> Unit) {

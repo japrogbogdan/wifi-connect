@@ -9,7 +9,7 @@ internal class Constants {
 
     companion object {
         const val TYPE_WPA2_SUPPORT = "wpa2_old_method"
-        const val TYPE_WPA2_SUGGESTION = "wpa2_suggestion_method"
+        const val TYPE_WPA2_SUGGESTION = "wpa2_api29_method" //wpa2_suggestion_method
         const val TYPE_WPA2_API30 = "wpa2_api30_method"
         const val TYPE_PASSPOINT_AOUCP = "passpoint_aoupc_method"
         const val TYPE_PASSPOINT_RESULT = "passpoint_30_method"

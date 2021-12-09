@@ -8,11 +8,17 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
+    lintOptions {
+        checkReleaseBuilds false
+        //If you want to continue even if errors found use following line
+        abortOnError false
+    }
+
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0.24"
+        versionName "1.0.26"
 
         consumerProguardFiles "consumer-rules.pro"
     }

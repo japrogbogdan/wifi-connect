@@ -63,19 +63,37 @@ internal class DelegateFactory(
         if (cached != null) return cached
 
         return when (config) {
-            is WifiConfig.SupportNetworkWep -> WebDelegate(wifiManager, connectivityManager, config).also {
+            is WifiConfig.SupportNetworkWep -> WebDelegate(
+                wifiManager,
+                connectivityManager,
+                config
+            ).also {
                 cache[config] = it
             }
-            is WifiConfig.SupportNetworkWpa2 -> Wpa2Delegate(wifiManager, connectivityManager, config, status).also {
+            is WifiConfig.SupportNetworkWpa2 -> Wpa2Delegate(
+                wifiManager,
+                connectivityManager,
+                config,
+                status
+            ).also {
                 cache[config] = it
             }
-            is WifiConfig.SupportNetworkWpa2Eap -> Wpa2EapDelegate(wifiManager, connectivityManager, config).also {
+            is WifiConfig.SupportNetworkWpa2Eap -> Wpa2EapDelegate(
+                wifiManager,
+                connectivityManager,
+                config
+            ).also {
                 cache[config] = it
             }
             is WifiConfig.Wpa2PassphraseSuggestion -> {
                 if (Build.VERSION.SDK_INT >= 29)
-                    SuggestionDelegate(
-                        wifiManager,
+                /*SuggestionDelegate(
+                    wifiManager,
+                    config,
+                    status
+                )*/
+                    Wpa2Api29Delegate(
+                        connectivityManager,
                         config,
                         status
                     ).also {

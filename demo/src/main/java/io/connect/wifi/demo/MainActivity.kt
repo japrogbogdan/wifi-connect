@@ -4,6 +4,7 @@ package io.connect.wifi.demo
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
@@ -15,8 +16,6 @@ import io.connect.wifi.sdk.WifiSession
 import io.connect.wifi.sdk.WifiSessionCallback
 import ui.helper.LocalCache
 import java.lang.Exception
-import io.connect.wifi.sdk.activity.ActivityHelper
-import io.connect.wifi.sdk.activity.ActivityHelperDelegate
 
 
 class MainActivity : AppCompatActivity() {
@@ -77,6 +76,7 @@ class MainActivity : AppCompatActivity() {
         permissions: Array<String>,
         grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         wifi?.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
