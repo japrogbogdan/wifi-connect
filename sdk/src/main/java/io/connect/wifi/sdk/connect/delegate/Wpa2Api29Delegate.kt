@@ -32,6 +32,10 @@ internal class Wpa2Api29Delegate(
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
                 //phone is connected to wifi network
+
+                // To make sure that requests don't go over mobile data
+                connectivityManager.bindProcessToNetwork(network)
+
                 status.invoke(ConnectStatus.Success)
             }
 
@@ -44,6 +48,8 @@ internal class Wpa2Api29Delegate(
             override fun onLost(network: Network) {
                 super.onLost(network)
                 //phone lost connection to network
+                connectivityManager.bindProcessToNetwork(null)
+                //connectivityManager.unregisterNetworkCallback(networkCallback)
                 status.invoke(ConnectStatus.Error(Exception("phone lost connection to network")))
             }
 
@@ -68,7 +74,7 @@ internal class Wpa2Api29Delegate(
      */
     override fun connect() {
         val networkSpecifier: NetworkSpecifier = WifiNetworkSpecifier.Builder()
-            .setSsid(rule.ssid)
+            .setSsid(rule.ssid) //for test "AndroidWifi"
             .setWpa2Passphrase(rule.password)
             //.setIsHiddenSsid(true) //specify if the network does not broadcast itself and OS must perform a forced scan in order to connect
             .build()

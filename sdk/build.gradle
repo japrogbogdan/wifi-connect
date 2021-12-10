@@ -18,7 +18,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0.26"
+        versionName "1.0.27"
 
         consumerProguardFiles "consumer-rules.pro"
     }
