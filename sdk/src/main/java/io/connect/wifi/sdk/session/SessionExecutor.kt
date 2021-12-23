@@ -1,6 +1,7 @@
 package io.connect.wifi.sdk.session
 
 import android.content.Context
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
@@ -10,6 +11,7 @@ import io.connect.wifi.sdk.activity.ActivityHelper
 import io.connect.wifi.sdk.analytics.ConnectResult
 import io.connect.wifi.sdk.data.DeviceData
 import io.connect.wifi.sdk.data.SessionData
+import io.connect.wifi.sdk.internal.Constants.Companion.TYPE_WPA2_SUGGESTION
 import io.connect.wifi.sdk.internal.LogUtils
 import io.connect.wifi.sdk.network.RequestConfigCommand
 import io.connect.wifi.sdk.task.SendAnalyticsTask
@@ -132,7 +134,12 @@ internal class SessionExecutor(
                 when (it) {
                     ConnectStatus.Success -> {
                         LogUtils.debug("[SessionExecutor] SUCCESS connect by rule $rule")
-                        queue.clear()
+                        if (Build.VERSION.SDK_INT == 29 &&
+                            rule.ruleName == TYPE_WPA2_SUGGESTION
+                        ) {
+
+                        } else
+                            queue.clear()
                         connectionResult.add(
                             ConnectResult(rule, io.connect.wifi.sdk.analytics.ConnectStatus.Success)
                         )
