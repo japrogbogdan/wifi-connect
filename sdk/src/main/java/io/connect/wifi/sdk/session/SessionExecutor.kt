@@ -136,10 +136,11 @@ internal class SessionExecutor(
                         LogUtils.debug("[SessionExecutor] SUCCESS connect by rule $rule")
                         if (Build.VERSION.SDK_INT == 29 &&
                             rule.ruleName == TYPE_WPA2_SUGGESTION
-                        ) {
-
-                        } else
+                        )
+                            startIteration()
+                        else
                             queue.clear()
+
                         connectionResult.add(
                             ConnectResult(rule, io.connect.wifi.sdk.analytics.ConnectStatus.Success)
                         )

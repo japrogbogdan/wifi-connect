@@ -65,7 +65,7 @@ internal class Controller(private val activityHelper: ActivityHelper?) {
         ctx = context
         initParams(context)
         when {
-            Build.VERSION.SDK_INT <= 29 -> doScanWiFiAndConnection(rule)
+            Build.VERSION.SDK_INT <= 29 && rule.ssid != null -> doScanWiFiAndConnection(rule)
             else -> doConnect(rule)
         }
     }
