@@ -162,7 +162,8 @@ class WifiSession private constructor(
                 } else {
                     // Permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    checkAndStartScanWifi()
+                    //remove the cyclic dependency
+                    //checkAndStartScanWifi()
                 }
             }
         }
