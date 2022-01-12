@@ -10,6 +10,9 @@ import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.tardyon.smartwifiv2.models.SmartWiFi
+import com.tardyon.smartwifiv2.models.SmartWiFiCallBack
+//import com.tardyon.smartwifiv2.builders.SmartWiFiBuilder
 import io.connect.wifi.demo.databinding.ActivityMainBinding
 import io.connect.wifi.sdk.WiFiSessionStatus
 import io.connect.wifi.sdk.WifiSession
@@ -52,7 +55,8 @@ class MainActivity : AppCompatActivity() {
             setHint("api domain")
 
             var domain = cache.apiDomain
-            if (domain.isEmpty()) domain = "https://api.smartregion.online"
+            if (domain.isEmpty()) domain =
+                "https://api.sweetlife.smartregion.moscow" //"https://api.smartregion.online"
             setText(domain)
         }
         binding.inputProjectId.apply {
@@ -69,6 +73,48 @@ class MainActivity : AppCompatActivity() {
         binding.btConnect.setOnClickListener {
             doConnect()
         }
+        binding.btExecOldSdk.setOnClickListener {
+            doExecOldSDK()
+        }
+    }
+
+    private fun doExecOldSDK() {
+        val channelID = binding.inputChannelId.getText().toLong()
+        val projectID = binding.inputProjectId.getText().toLong()
+
+        val smartWiFi = SmartWiFi.getBuilder()
+            .setApiDomain(binding.inputApiDomain.getText())
+            .setChannelID(channelID)
+            .setProjectID(projectID)
+            .setJWTToken(binding.inputToken.getText())
+            .setUserID(binding.inputUserId.getText())
+            .setToken(binding.inputToken.getText())
+            .build()
+        smartWiFi.execute(object : SmartWiFiCallBack {
+            override fun success() {
+                Toast.makeText(
+                    this@MainActivity,
+                    "old sdk exec success",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            override fun error(error: Exception) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "old sdk exec error=${error.message.orEmpty()}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            override fun infoMessage(message: String) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "old sdk exec msg=${message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
     }
 
     override fun onRequestPermissionsResult(
@@ -117,6 +163,20 @@ class MainActivity : AppCompatActivity() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
+                            is WiFiSessionStatus.RequestConfigsError -> {
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "RequestConfigs Error=${newStatus.reason.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            is WiFiSessionStatus.CreateWifiConfigError -> {
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "CreateWifiConfig Error=${newStatus.reason.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                             WiFiSessionStatus.Connecting -> {
                                 Toast.makeText(this@MainActivity, "Connecting", Toast.LENGTH_SHORT)
                                     .show()
@@ -139,6 +199,13 @@ class MainActivity : AppCompatActivity() {
                                 Toast.makeText(
                                     this@MainActivity,
                                     "ConnectionByLinkSuccess respose=${newStatus.response}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            is WiFiSessionStatus.ConnectionByLinkError -> {
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "ConnectionByLink Error=${newStatus.reason.message}",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }

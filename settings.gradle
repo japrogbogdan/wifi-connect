@@ -3,3 +3,4 @@ include ':app'
 include ':demo'
 rootProject.name = "AndroidWifiConnect"
 include ':helper'
+include 'smartwifi_lib'

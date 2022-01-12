@@ -93,6 +93,14 @@
         style="@style/ButtonTextView"
         android:layout_margin="16dp"
         android:text="@string/connect"
+        app:layout_constraintBottom_toTopOf="@id/bt_exec_old_sdk"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/bt_exec_old_sdk"
+        style="@style/ButtonTextView"
+        android:layout_margin="16dp"
+        android:text="@string/exec_old_sdk"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
