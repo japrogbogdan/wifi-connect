@@ -314,6 +314,12 @@ sealed class WiFiSessionStatus {
     }
 
     /**
+     * There's an failure. See reason for explanation.
+     */
+    @Keep
+    data class RequestConfigsError(val reason: Exception) : WiFiSessionStatus()
+
+    /**
      * We now in the process of connecting to wifi
      */
     @Keep
@@ -356,6 +362,19 @@ sealed class WiFiSessionStatus {
      */
     @Keep
     data class ConnectionByLinkSuccess(val response: String?) : WiFiSessionStatus()
+
+    /**
+     * Сonnection by link is an failure. See reason for explanation.
+     */
+    @Keep
+    data class ConnectionByLinkError(val reason: Exception) : WiFiSessionStatus()
+
+
+    /**
+     * Failed to create wifi config by current rule.
+     */
+    @Keep
+    data class CreateWifiConfigError(val reason: Exception) : WiFiSessionStatus()
 
     /**
      *  Unsuccessful wifi point search

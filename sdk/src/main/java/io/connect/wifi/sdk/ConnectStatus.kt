@@ -30,6 +30,12 @@ sealed class ConnectStatus {
     data class Error(val reason: Exception) : ConnectStatus()
 
     /**
+     * Failed to create wifi config by current rule.
+     */
+    @Keep
+    data class CreateWifiConfigError(val reason: Exception) : ConnectStatus()
+
+    /**
      * Unsuccessful wifi point search.
      */
     @Keep

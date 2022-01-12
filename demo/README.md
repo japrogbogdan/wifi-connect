@@ -80,6 +80,13 @@ private var wifi: WifiSession? = null
 
                         WiFiSessionStatus.ReceivedConfigs -> { }
 
+                        is WiFiSessionStatus.RequestConfigsError -> {
+                            val reason = newStatus.reason.message
+                        }
+                        is WiFiSessionStatus.CreateWifiConfigError -> {
+                            val reason = newStatus.reason.message
+                        }
+
                         WiFiSessionStatus.Connecting -> { }
 
                         WiFiSessionStatus.Success -> { }
@@ -90,6 +97,10 @@ private var wifi: WifiSession? = null
 
                         is WiFiSessionStatus.ConnectionByLinkSuccess -> {
                             val response = newStatus.response
+                        }
+
+                        is WiFiSessionStatus.ConnectionByLinkError -> {
+                            val reason = newStatus.reason.message
                         }
 
                         is WiFiSessionStatus.NotFoundWiFiPoint -> {

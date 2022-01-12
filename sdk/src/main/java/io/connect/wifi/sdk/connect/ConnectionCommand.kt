@@ -38,7 +38,7 @@ internal class ConnectionCommand(
             manager?.beginConnection(config)
         } ?: kotlin.run {
             LogUtils.debug("[ConnectionCommand] failed to create wifi config")
-            status.invoke(ConnectStatus.Error(Exception("Can't use current rule")))
+            status.invoke(ConnectStatus.CreateWifiConfigError(Exception("Can't use current rule")))
         }
     }
 }

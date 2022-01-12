@@ -102,7 +102,7 @@ internal class SessionExecutor(
             },
             error = {
                 LogUtils.debug("[SessionExecutor] Request configs error", it)
-                notifyStatusChanged(WiFiSessionStatus.Error(Exception(it)))
+                notifyStatusChanged(WiFiSessionStatus.RequestConfigsError(Exception(it)))
             },
             complete = {
                 LogUtils.debug("[SessionExecutor] Request remote finished")
@@ -155,6 +155,11 @@ internal class SessionExecutor(
                                 )
                             )
                         }
+                    }
+                    is ConnectStatus.CreateWifiConfigError -> {
+                        notifyStatusChanged(
+                            WiFiSessionStatus.CreateWifiConfigError(it.reason)
+                        )
                     }
                     is ConnectStatus.NotFoundWiFiPoint -> {
                         notifyStatusChanged(
@@ -234,8 +239,8 @@ internal class SessionExecutor(
                         notifyStatusChanged(WiFiSessionStatus.ConnectionByLinkSuccess(it))
                     },
                     connectionByLinkError = { throwable, string ->
-                        throwable?.let { notifyStatusChanged(WiFiSessionStatus.Error(Exception(it))) }
-                        string?.let { notifyStatusChanged(WiFiSessionStatus.Error(Exception(it))) }
+                        throwable?.let { notifyStatusChanged(WiFiSessionStatus.ConnectionByLinkError(Exception(it))) }
+                        string?.let { notifyStatusChanged(WiFiSessionStatus.ConnectionByLinkError(Exception(it))) }
                     })
             mainThreadHandler.post(successCallback!!)
         }
