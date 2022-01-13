@@ -99,6 +99,7 @@ internal class SessionExecutor(
                     cache.listWiFiRule = it
                 }
                 cache.traceId = it.second
+                notifyStatusChanged(WiFiSessionStatus.ReceivedConfigs)
             },
             error = {
                 LogUtils.debug("[SessionExecutor] Request configs error", it)
@@ -106,7 +107,6 @@ internal class SessionExecutor(
             },
             complete = {
                 LogUtils.debug("[SessionExecutor] Request remote finished")
-                notifyStatusChanged(WiFiSessionStatus.ReceivedConfigs)
             }
         )
     }
@@ -134,6 +134,11 @@ internal class SessionExecutor(
                 when (it) {
                     ConnectStatus.Success -> {
                         LogUtils.debug("[SessionExecutor] SUCCESS connect by rule $rule")
+                        connectionResult.add(
+                            ConnectResult(rule, io.connect.wifi.sdk.analytics.ConnectStatus.Success)
+                        )
+                        sendConnectionResultToAnalytics()
+
                         if (Build.VERSION.SDK_INT == 29 &&
                             rule.ruleName == TYPE_WPA2_SUGGESTION
                         )
@@ -141,10 +146,6 @@ internal class SessionExecutor(
                         else
                             queue.clear()
 
-                        connectionResult.add(
-                            ConnectResult(rule, io.connect.wifi.sdk.analytics.ConnectStatus.Success)
-                        )
-                        sendConnectionResultToAnalytics()
                         notifyStatusChanged(WiFiSessionStatus.Success)
                         rule.successCallbackUrl?.let { i ->
                             if (i.isNotEmpty()) triggerSuccessCallbackUrl(i)
@@ -160,6 +161,14 @@ internal class SessionExecutor(
                         notifyStatusChanged(
                             WiFiSessionStatus.CreateWifiConfigError(it.reason)
                         )
+                        connectionResult.add(
+                            ConnectResult(
+                                rule,
+                                io.connect.wifi.sdk.analytics.ConnectStatus.Error,
+                                it.reason.message
+                            )
+                        )
+                        startIteration()
                     }
                     is ConnectStatus.NotFoundWiFiPoint -> {
                         notifyStatusChanged(
@@ -167,6 +176,14 @@ internal class SessionExecutor(
                                 it.ssid
                             )
                         )
+                        connectionResult.add(
+                            ConnectResult(
+                                rule,
+                                io.connect.wifi.sdk.analytics.ConnectStatus.Error,
+                                "NotFoundWiFiPoint ssid=${it.ssid}"
+                            )
+                        )
+                        startIteration()
                     }
                     is ConnectStatus.Error -> {
                         LogUtils.debug("[SessionExecutor] FAILED connect by rule $rule", it.reason)
@@ -239,8 +256,20 @@ internal class SessionExecutor(
                         notifyStatusChanged(WiFiSessionStatus.ConnectionByLinkSuccess(it))
                     },
                     connectionByLinkError = { throwable, string ->
-                        throwable?.let { notifyStatusChanged(WiFiSessionStatus.ConnectionByLinkError(Exception(it))) }
-                        string?.let { notifyStatusChanged(WiFiSessionStatus.ConnectionByLinkError(Exception(it))) }
+                        throwable?.let {
+                            notifyStatusChanged(
+                                WiFiSessionStatus.ConnectionByLinkError(
+                                    Exception(it)
+                                )
+                            )
+                        }
+                        string?.let {
+                            notifyStatusChanged(
+                                WiFiSessionStatus.ConnectionByLinkError(
+                                    Exception(it)
+                                )
+                            )
+                        }
                     })
             mainThreadHandler.post(successCallback!!)
         }
