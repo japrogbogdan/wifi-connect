@@ -20,6 +20,7 @@ import java.lang.ref.SoftReference
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import io.connect.wifi.sdk.util.execute
+import java.lang.Exception
 
 /**
  * @suppress Internal api
@@ -168,7 +169,9 @@ internal class Controller(private val activityHelper: ActivityHelper?) {
             },
             resultHandler = mainThreadHandler,
             success = {},
-            error = {},
+            error = {
+                connectStatus.invoke(ConnectStatus.Error(Exception(it.message)))
+            },
             complete = {}
         )
     }

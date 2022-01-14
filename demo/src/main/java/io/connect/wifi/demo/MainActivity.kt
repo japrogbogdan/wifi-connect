@@ -156,10 +156,10 @@ class MainActivity : AppCompatActivity() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
-                            WiFiSessionStatus.ReceivedConfigs -> {
+                            is WiFiSessionStatus.ReceivedConfigs -> {
                                 Toast.makeText(
                                     this@MainActivity,
-                                    "ReceivedConfigs",
+                                    "ReceivedConfigs rules=${newStatus.rules} traceId=${newStatus.traseId}",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }

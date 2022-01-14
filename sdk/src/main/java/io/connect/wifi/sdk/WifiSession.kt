@@ -309,7 +309,7 @@ sealed class WiFiSessionStatus {
      * We received wifi rules
      */
     @Keep
-    object ReceivedConfigs : WiFiSessionStatus() {
+    data class ReceivedConfigs(val rules: String, val traseId: String) : WiFiSessionStatus() {
         override fun toString() = "ReceivedConfigs"
     }
 

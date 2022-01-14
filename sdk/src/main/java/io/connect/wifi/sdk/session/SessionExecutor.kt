@@ -99,7 +99,12 @@ internal class SessionExecutor(
                     cache.listWiFiRule = it
                 }
                 cache.traceId = it.second
-                notifyStatusChanged(WiFiSessionStatus.ReceivedConfigs)
+                notifyStatusChanged(
+                    WiFiSessionStatus.ReceivedConfigs(
+                        cache.listWiFiRule?.map { it.ruleName.orEmpty() }?.joinToString().orEmpty(),
+                        cache.traceId.orEmpty()
+                    )
+                )
             },
             error = {
                 LogUtils.debug("[SessionExecutor] Request configs error", it)
