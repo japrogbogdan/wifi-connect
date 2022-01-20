@@ -23,7 +23,7 @@ internal fun String.toWifiRules(): Pair<List<WifiRule>,String?> {
         } catch (e: JSONException) {
             null
         }
-        if (config == null) break
+        if (config == null) continue
         else {
             rule = try {
                 when {
